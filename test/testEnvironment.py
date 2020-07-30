@@ -15,12 +15,13 @@ class TestTransition(unittest.TestCase):
         pass
 
     @data(
-        (None,None,None),
+        ('listen', 'tiger-left', 'tiger-left'),
     )
     @unpack
     def testTransition(self,state,action,nextState):
-        testedTerm = True
-        testingTerm = True
+        tigerTransition = TigerTransition()
+        testedTerm = tigerTransition(state,action,nextState)
+        testingTerm = 1
         self.assertEqual(testedTerm,testingTerm)
 
 
@@ -33,12 +34,13 @@ class TestReward(unittest.TestCase):
         pass
 
     @data(
-        (None,None),
+        ('listen', 'tiger-left'),
     )
     @unpack
     def testReward(self,action,state):
-        testedTerm = True
-        testingTerm = True
+        tigerReward = TigerReward()
+        testedTerm = tigerReward(action,state)
+        testingTerm = -1
         self.assertEqual(testedTerm, testingTerm)
 
 
@@ -51,12 +53,13 @@ class TestObservation(unittest.TestCase):
         pass
 
     @data(
-        (None,None,None),
+        ('listen', 'tiger-left', 'tiger-left'),
     )
     @unpack
     def testObservation(self,action,state,observation):
-        testedTerm = True
-        testingTerm = True
+        tigerObservation = TigerObservation()
+        testedTerm = tigerObservation(action,state,observation)
+        testingTerm = 0.85
         self.assertEqual(testedTerm, testingTerm)
 
 
