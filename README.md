@@ -1,4 +1,4 @@
-# POMDP-Solver
+# POMDP Solver
 
 ***
 
