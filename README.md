@@ -2,7 +2,7 @@
 
 ***
 
-Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point Based Value Iteration). This project will continuously update.
+Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point Based Value Iteration). The project will continuously update.
 
 **File Organization**
 
