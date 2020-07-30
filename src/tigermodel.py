@@ -31,7 +31,7 @@ class TigerModel(object):
         observations = TigerObservation()
         return observations(action, state, observation)
 
-    # TODO: Need Some Belief Points
+    # TODO: Need a function to generate belief points
 
     def generateUniformBeliefs(self):
         stateNUM = len(self.states)
