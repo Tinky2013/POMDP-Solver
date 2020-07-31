@@ -6,7 +6,7 @@ Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point
 
 **File Organization**
 
-* **runPOMDP.py**: Executable File.
+* [**runPOMDP.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/runPOMDP.py): Executable File.
 
 * src
   * [**solver.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/solver.py): Super class for all the solvers (although we only implement PBVI now, it will make it easier to add other solvers).
@@ -14,9 +14,9 @@ Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point
   * [**tigermodel.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/tigermodel.py): Model setting part (Receives information from tiger environment).
 
 * Environment
-  * **tigerEnvironment.py**: Task Environment of Two-Tiger Problem.
+  * [**tigerEnvironment.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/Environment/tigerEnvironment.py): Task Environment of Two-Tiger Problem.
   
 * test
-  * **testEnvironment.py**.
+  * [**testEnvironment.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/test/testEnvironment.py).
   
   
