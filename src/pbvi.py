@@ -34,3 +34,13 @@ class PBVI(Solver):
             self.alphaVectors = self.findBestAction(gammaActionBelief)
         
         self.solved = True
+
+        
+        
+    def getBestAction(self, belief):
+        bestAction = None
+        return bestAction # return the name of the best action
+
+    def updateBelief(self, belief, action, observation):
+        normalizedBelief = None
+        return normalizedBelief # return array with length=stateDim
