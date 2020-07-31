@@ -11,6 +11,15 @@ class PBVI(Solver):
         Solver.__init__(self, modelEnv)
         self.solved = False
 
+        
+    def createProjection(self):
+        pass
+
+    def computeCrossSum(self, gammaIntermediate):
+        pass
+
+    def findBestAction(self, gammaActionBelief):
+        pass
     
     def solveHorizonT(self, T):
         mEnv = self.modelEnv
