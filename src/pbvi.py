@@ -6,8 +6,9 @@ PBVI is a subclass of 'Solver'
 all the algorithm will be included in the super class 'Solver'.
 '''
 
-class PBVI():
-    def __init__(self):
-        pass
+class PBVI(Solver):
+    def __init__(self, modelEnv):
+        Solver.__init__(self, modelEnv)
+        self.solved = False
 
-    # TODO: main part of PBVI algorithm
+    
