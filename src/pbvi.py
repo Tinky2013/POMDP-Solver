@@ -22,7 +22,6 @@ class PBVI(Solver):
         pass
     
     def solveHorizonT(self, T):
-        mEnv = self.modelEnv
         if self.solved:
             return
         # every step the alpha-vector will be updated
