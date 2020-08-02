@@ -20,14 +20,6 @@ class PBVI(PomdpUtility):
     def specifyAlgorithmArguments(self, beliefPoints):
         PomdpUtility.specifyAlgorithmArguments(self)
         self.beliefPoints = beliefPoints
-        self.calculateReward()
-
-    def calculateReward(self):
-        pass
-
-    def calculateActionObservation(self, action, observation):
-        gammaActionObservation = None
-        return gammaActionObservation
 
     def createProjection(self):
         pass
