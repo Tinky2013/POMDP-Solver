@@ -13,7 +13,7 @@ def chooseItemIdx(probs):
 
 def generateBeliefPoints(states, stepsize):
     '''
-    Here we used Uniform Sampling
+    Here we used uniform random over the belief simplex
     '''
     beliefPoints = [
         [random.uniform() for s in states] for i in arange(0, 1+stepsize, stepsize)
