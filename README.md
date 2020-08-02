@@ -17,7 +17,8 @@ Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point
   * [**tigerEnvironment.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/Environment/tigerEnvironment.py): Task Environment of Two-Tiger Problem.
   
 * tools: Useful packed tools for solving POMDPs.
-  * [**alphaVector.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/tools/alphaVector.py)
+  * [**alphaVector.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/tools/alphaVector.py): Alpha-Vector data structure.
+  * [**sampleUtility.p**](https://github.com/Tinky2013/POMDP-Solver/blob/master/tools/sampleUtility.py): Sampling method packages.
 
 * test
   * [**testEnvironment.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/test/testEnvironment.py).
