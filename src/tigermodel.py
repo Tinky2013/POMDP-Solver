@@ -5,16 +5,19 @@ Import the transition function, reward funciton and observation of a tiger envir
 this file will initialize the model setting.
 '''
 
-import numpy as np
-
+from numpy import random
+from tools.sampleUtility import chooseItemIdx
 from Environment.tigerEnvironment import TigerTransition, TigerReward, TigerObservation
+import numpy as np
 
 class TigerModel(object):
     def __init__(self):
+        self.discount = 0.75
 
         # tiger environment
         self.states = ['tiger-left', 'tiger-right']
         self.actions = ['listen', 'open-left', 'open-right']
+        self.observations = ['tiger-left', 'tiger-right']
 
         # other settings
         self.initState = None
@@ -43,11 +46,18 @@ class TigerModel(object):
         observations = TigerObservation()
         return observations(action, state, observation)
 
-    # TODO: Need Some Belief Points
+    def envFeedBack(self, action):
+        state = self.currentState   # after we have state and action, we can calculate observation, reward, nextState
 
-    def generateUniformBeliefs(self):
-        stateNUM = len(self.states)
-        Beliefs = [1/stateNUM for i in range(stateNUM)]
-        return Beliefs
+        nextStateProbs = [self.transitionFunction(action, state, sj) for sj in self.states]
+        nextState = self.states[chooseItemIdx(nextStateProbs)]
+
+        observationProbs = [self.observationFunction(action, nextState, oj) for oj in self.observations]
+        observation = self.observations[chooseItemIdx(observationProbs)]
+
+        reward = self.rewardFunction(action, state)
+        return nextState, observation, reward
+
+
 
 

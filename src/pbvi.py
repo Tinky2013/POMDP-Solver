@@ -2,8 +2,8 @@
 This part is the core code of PBVI algorithm. It will include some utilities from other files
 
 Notice (About My Code Design):
-PBVI is a subclass of 'PomdpUtility'
-all the algorithm will be included in the super class 'PomdpUtility'.
+PBVI is a subclass of 'Solver'
+all the algorithm will be included in the super class 'Solver'.
 '''
 
 import numpy as np
@@ -17,8 +17,10 @@ class PBVI(PomdpUtility):
         self.alphaVectors = [AlphaVector(action=-1, value=np.zeros(modelEnv.stateDim))]
         self.solved = False
 
-    def specifyAlgorithmArguments(self):
-        pass
+    def specifyAlgorithmArguments(self, beliefPoints):
+        PomdpUtility.specifyAlgorithmArguments(self)
+        self.beliefPoints = beliefPoints
+        self.calculateReward()
 
     def calculateReward(self):
         pass

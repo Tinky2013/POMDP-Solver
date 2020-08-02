@@ -38,3 +38,19 @@ class PomdpUtility(object):
         :return: action name (str).
         '''
 
+    @abstractmethod
+    def specifyAlgorithmArguments(self, *args):
+        '''
+        This function is used for adding specify arguments for specific solver
+        :param args: additional arguments for the algorithm
+        :return:
+        '''
+
+    def envFeedback(self, action):
+        '''
+        Just for external usage
+        :param action:
+        :return: nextState, observation, reward
+        '''
+        return self.modelEnv.envFeedback(action)
+
