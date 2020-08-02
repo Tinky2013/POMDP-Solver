@@ -13,11 +13,23 @@ class TigerModel(object):
     def __init__(self):
 
         # tiger environment
-        self.states = ['tiger-left', 'tiger-left']
+        self.states = ['tiger-left', 'tiger-right']
+        self.actions = ['listen', 'open-left', 'open-right']
 
         # other settings
         self.initState = None
         self.currentState = self.initState or np.random.choice(self.states)
+
+    '''
+    Here's some property of the tiger model
+    '''
+    @property
+    def stateDim(self):
+        return len(self.states)
+
+    @property
+    def actionDim(self):
+        return len(self.actions)
 
     def transitionFunction(self, action, state, nextState):
         transitions = TigerTransition()
@@ -31,7 +43,7 @@ class TigerModel(object):
         observations = TigerObservation()
         return observations(action, state, observation)
 
-    # TODO: Need a function to generate belief points
+    # TODO: Need Some Belief Points
 
     def generateUniformBeliefs(self):
         stateNUM = len(self.states)
