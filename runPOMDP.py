@@ -27,13 +27,11 @@ def main():
     if modelName == 'Tiger':
         modelEnv = TigerModel()
     if algoName == 'pbvi':
-        solve = PBVI()
-
+        solve = PBVI(modelEnv)
 
     # here we generate the initial belief
     belief = modelEnv.generateUniformBeliefs()
     totalRewards = 0
-
     if execParams['print_process']:
         print('''Initial State: {} || Initial Belief: {} || Time Horizon: {} || Max Play: {}
         '''.format(modelEnv.currentState,belief,horizonT,maxPlay))
