@@ -46,7 +46,7 @@ class TigerModel(object):
         observations = TigerObservation()
         return observations(action, state, observation)
 
-    def envFeedBack(self, action):
+    def envFeedback(self, action):
         state = self.currentState   # after we have state and action, we can calculate observation, reward, nextState
 
         nextStateProbs = [self.transitionFunction(action, state, sj) for sj in self.states]

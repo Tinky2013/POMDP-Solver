@@ -30,3 +30,7 @@ class TestUpdateBelief(unittest.TestCase):
         testedTerm = pbvi.updateBelief(belief, action, observation)
         testingTerm = actualNormalizedBelief
         self.assertEqual(testedTerm, testingTerm)
+
+
+if __name__ == '__main__':
+    unittest.main()

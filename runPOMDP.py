@@ -3,6 +3,8 @@ from src.pbvi import PBVI
 
 from tools.sampleUtility import generateBeliefPoints, generateUniformBeliefs
 
+from visualization.visualizeTiger import VisualizedTiger
+
 def main():
     execParams = {
         'config': 'pbvi',
@@ -23,19 +25,24 @@ def main():
     horizonT = algoParams['T']
     modelEnv = None     # model environment
     solver = None        # solver
+    visualizer = None
 
     print("Initialising...")
 
     # here we choose the task environment and the solver
     if modelName == 'Tiger':
         modelEnv = TigerModel()
+        visualizer= VisualizedTiger()
     if algoName == 'pbvi':
         solver = PBVI(modelEnv)
 
     # here we generate the initial belief and choose some belief points
-    belief = generateUniformBeliefs(modelEnv.states)
+    belief = generateUniformBeliefs(modelEnv.states)        # initial belief: [0.5,0.5]
     beliefPoints = generateBeliefPoints(modelEnv.states, algoParams['step_size'])
     solver.specifyAlgorithmArguments(beliefPoints)
+
+
+    #visualizer.visualizeBeliefPoint(beliefPoints)
 
     totalRewards = 0
     if execParams['print_process']:
