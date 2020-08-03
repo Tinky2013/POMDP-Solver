@@ -9,17 +9,41 @@ all the algorithm will be included in the super class 'Solver'.
 import numpy as np
 from tools.alphaVector import AlphaVector
 from src.pomdputility import PomdpUtility
+from array import array
 
 class PBVI(PomdpUtility):
     def __init__(self, modelEnv):
         PomdpUtility.__init__(self, modelEnv)
+        self.modelEnv = modelEnv
         self.beliefPoints = None
-        self.alphaVectors = [AlphaVector(action=-1, value=np.zeros(modelEnv.stateDim))]
+        self.alphaVectors = [AlphaVector(action=-1, value=np.zeros(self.modelEnv.stateDim))]
+        self.gammaReward = self.matrixReward()
         self.solved = False
 
     def specifyAlgorithmArguments(self, beliefPoints):
         PomdpUtility.specifyAlgorithmArguments(self)
         self.beliefPoints = beliefPoints
+
+    def matrixReward(self):
+        MatrixReward={
+            a: np.frombuffer(array('d', [self.modelEnv.rewardFunction(a, s) for s in self.modelEnv.states]))
+            for a in self.modelEnv.actions
+        }
+        return MatrixReward
+
+    def calculateGammaIntermediate(self, action, observation):
+        mEnv = self.modelEnv
+        gammaSummation = []
+        for alpha in self.alphaVectors:
+            v = np.zeros(mEnv.stateDim)
+            for i, si in enumerate(mEnv.states):
+                for j, sj in enumerate(mEnv.states):
+                    Trans = mEnv.transitionFunction(action, si, sj)
+                    Omega = mEnv.observationFunction(action, sj, observation)
+                    v[i] += Trans * Omega * alpha.value[j]
+                v[i] *= mEnv.discount
+            gammaSummation.append(v)
+        return gammaSummation
 
     def createProjection(self):
         pass
