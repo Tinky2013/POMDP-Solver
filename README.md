@@ -20,8 +20,10 @@ Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point
   * [**alphaVector.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/tools/alphaVector.py): Alpha-Vector data structure.
   * [**sampleUtility.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/tools/sampleUtility.py): Sampling method packages.
 
+* visualization
+  * [**visualizeTiger.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/visualization/visualizeTiger.py).
+
 * test
   * [**testEnvironment.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/test/testEnvironment.py).
   * [**testPomdpUtility.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/test/testPomdpUtility.py).
-  
-  
+  * [**testEnvFeedback.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/test/testEnvFeedback.py).
