@@ -6,6 +6,7 @@ from tools.sampleUtility import generateBeliefPoints, generateUniformBeliefs
 from visualization.visualizeTiger import VisualizedTiger
 
 def main():
+    # 1. choose your parameters
     execParams = {
         'config': 'pbvi',
         'model_name': 'Tiger',
@@ -27,31 +28,33 @@ def main():
     solver = None        # solver
     visualizer = None
 
-    print("Initialising...")
-
-    # here we choose the task environment and the solver
+    # 2. choose your environment
     if modelName == 'Tiger':
         modelEnv = TigerModel()
         visualizer= VisualizedTiger()
+    else:
+        pass
+
+    # 3. choose your solver
     if algoName == 'pbvi':
         solver = PBVI(modelEnv)
+    else:
+        pass
 
-    # here we generate the initial belief and choose some belief points
+    # 4. choose your belief generation method
     belief = generateUniformBeliefs(modelEnv.states)        # initial belief: [0.5,0.5]
     beliefPoints = generateBeliefPoints(modelEnv.states, algoParams['step_size'])
     solver.specifyAlgorithmArguments(beliefPoints)
 
-
+    # 5. choose your visualization part
     #visualizer.visualizeBeliefPoint(beliefPoints)
 
+
+    # start playing
     totalRewards = 0
     if execParams['print_process']:
         print('''Initial State: {} || Initial Belief: {} || Time Horizon: {} || Max Play: {}
         '''.format(modelEnv.currentState,belief,horizonT,maxPlay))
-
-
-
-    # start playing
     for i in range(maxPlay):
         # this is a general framework of solving POMDP problems
         solver.planningHorizon(horizonT)                               # planning
@@ -59,11 +62,9 @@ def main():
         nextState, observation, reward = solver.envFeedback(action)  # receive environment feedback
         belief = solver.updateBelief(belief, action, observation)    # update the belief
         totalRewards += reward
-
         # for every trial, print the result
         if execParams['print_process']:
             print("Play Times: {} || Action Chosen: {} || Observation: {} || Reward: {} || New State: {} || New Belief: {}".format(i,action,observation,reward,nextState,belief))
-
     print("Total reward:{}".format(totalRewards))
 
 

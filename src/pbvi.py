@@ -17,7 +17,7 @@ class PBVI(PomdpUtility):
         self.modelEnv = modelEnv
         self.beliefPoints = None
         self.alphaVectors = [AlphaVector(action=-1, value=np.zeros(self.modelEnv.stateDim))]
-        self.gammaAStar = self.gammaAStar()
+        self.gammaAStar = self.calculateGammaAStar()
         self.solved = False
 
     def specifyAlgorithmArguments(self, beliefPoints):
