@@ -17,22 +17,22 @@ class PBVI(PomdpUtility):
         self.modelEnv = modelEnv
         self.beliefPoints = None
         self.alphaVectors = [AlphaVector(action=-1, value=np.zeros(self.modelEnv.stateDim))]
-        self.gammaReward = self.matrixReward()
+        self.gammaAStar = self.gammaAStar()
         self.solved = False
 
     def specifyAlgorithmArguments(self, beliefPoints):
         PomdpUtility.specifyAlgorithmArguments(self)
         self.beliefPoints = beliefPoints
 
-    def matrixReward(self):
-        MatrixReward={
+    def calculateGammaAStar(self):
+        gammaAStar={
             a: np.frombuffer(array('d', [self.modelEnv.rewardFunction(a, s) for s in self.modelEnv.states]))
             for a in self.modelEnv.actions
         }
-        return MatrixReward
+        return gammaAStar
 
 
-    def calculateGammaIntermediate(self, action, observation):
+    def calculateGammaAOIntermediate(self, action, observation):
         '''
         Calculation part for step 1
         The return should be: [v1, v2, ..., vi, ...]
@@ -54,13 +54,14 @@ class PBVI(PomdpUtility):
 
     def createProjection(self):
         '''
+        This is Step 1
         For every action-observation pair we need to compute a vector
         The return should be a dictionary: Gamma(a, o)
         '''
         mEnv = self.modelEnv
         gammaAO = {
             a: {
-                o: self.calculateGammaIntermediate(a, o) for o in mEnv.observations
+                o: self.calculateGammaAOIntermediate(a, o) for o in mEnv.observations
             } for a in mEnv.actions
         }
         return gammaAO
@@ -68,6 +69,7 @@ class PBVI(PomdpUtility):
 
     def computeCrossSum(self, gammaAO):
         '''
+        This is Step 2
         For every belief-action pair we need to compute a vector
         The return should be a dictionary: Gamma(b, a)
         '''
@@ -76,7 +78,7 @@ class PBVI(PomdpUtility):
         for a in mEnv.actions:
             gammaAB[a] = {}
             for bIdx, b in enumerate(self.beliefPoints):
-                gammaAB[a][bIdx] = self.gammaReward[a].copy()
+                gammaAB[a][bIdx] = self.gammaAStar[a].copy()
                 for o in mEnv.observations:     # find the best point for all possible observation
                     bestAlphaIdx = np.argmax(np.dot(gammaAO[a][o], b))
                     gammaAB[a][bIdx] += gammaAO[a][o][bestAlphaIdx]
@@ -84,6 +86,10 @@ class PBVI(PomdpUtility):
 
 
     def findBestAction(self, gammaAB):
+        '''
+        This is Step 3
+        Get the best alpha-vector for every belief point
+        '''
         mEnv = self.modelEnv
         newBestGammaVector, maxVal = [], -np.inf
         for bIdx, b in enumerate(self.beliefPoints):
@@ -98,33 +104,39 @@ class PBVI(PomdpUtility):
         return newBestGammaVector
 
 
+    def backUp(self):
+        '''
+        This is the backUp operator
+        '''
+        # step 1: create projection
+        gammaAO = self.createProjection()
+        # step 2: cross-sum operation
+        gammaAB = self.computeCrossSum(gammaAO)
+        # step 3: find best action for each belief point
+        self.alphaVectors = self.findBestAction(gammaAB)
+
+
+
     def planningHorizon(self, T):
         if self.solved:
-            '''
-            Here you may write something to check the planning result.
-            '''
+            # TODO: Check the planing
             return
-        # every step the alpha-vector will be updated
-        for step in range(T):
-            # step 1: create projection
-            gammaAO = self.createProjection()
-            # step 2: cross-sum operation
-            gammaAB = self.computeCrossSum(gammaAO)
-            # step 3: find best action for each belief point
-            self.alphaVectors = self.findBestAction(gammaAB)
+
+        for iter in range(T):
+            self.backUp()       # every step the alpha-vector will be updated
 
         self.solved = True
 
 
     def getBestAction(self, belief):
         maxValue = -np.inf
-        bestVectorIdx = None
+        bestVector = None
         for alphaVector in self.alphaVectors:
             value = np.dot(alphaVector.value, belief)
             if value > maxValue:
                 maxValue = value
-                bestVectorIdx = alphaVector
-        return bestVectorIdx.action
+                bestVector = alphaVector
+        return bestVector.action
 
 
     def updateBelief(self, belief, action, observation):
