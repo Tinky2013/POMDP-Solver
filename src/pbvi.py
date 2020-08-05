@@ -100,6 +100,9 @@ class PBVI(PomdpUtility):
 
     def solveHorizonT(self, T):
         if self.solved:
+            '''
+            Here you may write something to check the planning result.
+            '''
             return
         # every step the alpha-vector will be updated
         for step in range(T):
