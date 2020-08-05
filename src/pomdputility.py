@@ -14,7 +14,7 @@ class PomdpUtility(object):
     Notice: these abstract method should be implemented by certain algorithms
     '''
     @abstractmethod
-    def solveHorizonT(self, T):
+    def planningHorizon(self, T):
         '''
         This is the POMDP solving part
         :param T: planing horizon

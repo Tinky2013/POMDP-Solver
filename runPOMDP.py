@@ -54,7 +54,7 @@ def main():
     # start playing
     for i in range(maxPlay):
         # this is a general framework of solving POMDP problems
-        solver.solveHorizonT(horizonT)                               # planning
+        solver.planningHorizon(horizonT)                               # planning
         action = solver.getBestAction(belief)                        # get best action
         nextState, observation, reward = solver.envFeedback(action)  # receive environment feedback
         belief = solver.updateBelief(belief, action, observation)    # update the belief

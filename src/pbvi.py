@@ -98,7 +98,7 @@ class PBVI(PomdpUtility):
         return newBestGammaVector
 
 
-    def solveHorizonT(self, T):
+    def planningHorizon(self, T):
         if self.solved:
             '''
             Here you may write something to check the planning result.
