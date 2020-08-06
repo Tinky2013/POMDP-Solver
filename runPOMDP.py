@@ -16,7 +16,7 @@ def main():
     }
     algoParams = {
         'algo':'pbvi',
-        'T': 5,
+        'T': 2,
         'step_size': 0.01,
     }
 
@@ -58,7 +58,7 @@ def main():
     for i in range(maxPlay):
         # this is a general framework of solving POMDP problems
         solver.planningHorizon(horizonT)                               # planning
-        action = solver.getBestAction(belief)                        # get best action
+        action = solver.getBestPlanningAction(belief)                        # get best action
         nextState, observation, reward = solver.envFeedback(action)  # receive environment feedback
         belief = solver.updateBelief(belief, action, observation)    # update the belief
         totalRewards += reward

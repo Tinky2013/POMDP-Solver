@@ -31,7 +31,7 @@ class PomdpUtility(object):
         '''
 
     @abstractmethod
-    def getBestAction(self, belief):
+    def getBestPlanningAction(self, belief):
         '''
         This is the function help us choose the best action
         :param belief: belief distribution (array).

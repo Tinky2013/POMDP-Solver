@@ -85,7 +85,7 @@ class PBVI(PomdpUtility):
         return gammaAB
 
 
-    def findBestAction(self, gammaAB):
+    def findBestAlphaVector(self, gammaAB):
         '''
         This is Step 3
         Get the best alpha-vector for every belief point
@@ -113,7 +113,7 @@ class PBVI(PomdpUtility):
         # step 2: cross-sum operation
         gammaAB = self.computeCrossSum(gammaAO)
         # step 3: find best action for each belief point
-        self.alphaVectors = self.findBestAction(gammaAB)
+        self.alphaVectors = self.findBestAlphaVector(gammaAB)
 
 
 
@@ -128,7 +128,7 @@ class PBVI(PomdpUtility):
         self.solved = True
 
 
-    def getBestAction(self, belief):
+    def getBestPlanningAction(self, belief):
         maxValue = -np.inf
         bestVector = None
         for alphaVector in self.alphaVectors:
