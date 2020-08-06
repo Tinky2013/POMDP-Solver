@@ -22,8 +22,3 @@ Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point
 
 * visualization
   * [**visualizeTiger.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/visualization/visualizeTiger.py).
-
-* test
-  * [**testEnvironment.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/test/testEnvironment.py).
-  * [**testPomdpUtility.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/test/testPomdpUtility.py).
-  * [**testEnvFeedback.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/test/testEnvFeedback.py).
