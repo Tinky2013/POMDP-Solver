@@ -34,6 +34,10 @@ class TigerModel(object):
     def actionDim(self):
         return len(self.actions)
 
+    @property
+    def observationDim(self):
+        return len(self.observations)
+
     def transitionFunction(self, action, state, nextState):
         transitions = TigerTransition()
         return transitions(action, state, nextState)

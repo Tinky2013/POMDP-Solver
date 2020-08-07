@@ -81,7 +81,6 @@ class PBVI(PomdpUtility):
         mEnv = self.modelEnv
         gammaAB = {}
         for a in mEnv.actions:
-            gammaAB[a] = {}
             for bIdx, b in enumerate(self.beliefPoints):
                 gammaAB[a][bIdx] = self.gammaAStar[a].copy()
                 for o in mEnv.observations:     # find the best point for all possible observation
