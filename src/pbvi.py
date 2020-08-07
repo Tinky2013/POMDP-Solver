@@ -10,6 +10,11 @@ import numpy as np
 from tools.alphaVector import AlphaVector
 from src.pomdputility import PomdpUtility
 from array import array
+from numpy import arange
+import random
+
+np.random.seed()
+random.seed()
 
 class PBVI(PomdpUtility):
     def __init__(self, modelEnv):
@@ -20,9 +25,10 @@ class PBVI(PomdpUtility):
         self.gammaAStar = self.calculateGammaAStar()
         self.solved = False
 
-    def specifyAlgorithmArguments(self, beliefPoints):
+    def specifyAlgorithmArguments(self, beliefPoints, expend):
         PomdpUtility.specifyAlgorithmArguments(self)
         self.beliefPoints = beliefPoints
+        self.expend = expend
 
     def calculateGammaAStar(self):
         gammaAStar={
@@ -115,17 +121,23 @@ class PBVI(PomdpUtility):
         # step 3: find best action for each belief point
         self.alphaVectors = self.findBestAlphaVector(gammaAB)
 
-
-
     def planningHorizon(self, T):
         if self.solved:
             # TODO: Check the planing
             return
+        N = self.expend
+        for expend in range(N):
+            for iter in range(T):
+                self.backUp()       # every step the alpha-vector will be updated
 
-        for iter in range(T):
-            self.backUp()       # every step the alpha-vector will be updated
+            self.expendBeliefPoints()
 
         self.solved = True
+
+    def expendBeliefPoints(self):
+        mEnv = self.modelEnv
+        newBeliefPoints = [[random.uniform(0,1) for s in mEnv.states]]
+        self.beliefPoints = np.vstack((self.beliefPoints, newBeliefPoints))
 
 
     def getBestPlanningAction(self, belief):

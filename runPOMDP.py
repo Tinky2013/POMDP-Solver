@@ -17,6 +17,7 @@ def main():
     algoParams = {
         'algo':'pbvi',
         'T': 2,
+        'expend': 5,
         'step_size': 0.01,
     }
 
@@ -24,6 +25,7 @@ def main():
     maxPlay = execParams['max_play']
     algoName = algoParams['algo']
     horizonT = algoParams['T']
+    expendN = algoParams['expend']
     modelEnv = None     # model environment
     solver = None        # solver
     visualizer = None
@@ -44,7 +46,7 @@ def main():
     # 4. choose your belief generation method
     belief = generateUniformBeliefs(modelEnv.states)        # initial belief: [0.5,0.5]
     beliefPoints = generateBeliefPoints(modelEnv.states, algoParams['step_size'])
-    solver.specifyAlgorithmArguments(beliefPoints)
+    solver.specifyAlgorithmArguments(beliefPoints,expendN)
 
     # 5. choose your visualization part
     #visualizer.visualizeBeliefPoint(beliefPoints)
