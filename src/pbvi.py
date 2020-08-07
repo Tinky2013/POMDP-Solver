@@ -10,7 +10,6 @@ import numpy as np
 from tools.alphaVector import AlphaVector
 from src.pomdputility import PomdpUtility
 from array import array
-from numpy import arange
 import random
 
 np.random.seed()
@@ -129,7 +128,6 @@ class PBVI(PomdpUtility):
         for expend in range(N):
             for iter in range(T):
                 self.backUp()       # every step the alpha-vector will be updated
-
             self.expendBeliefPoints()
 
         self.solved = True

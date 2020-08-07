@@ -16,7 +16,9 @@ class TestTransition(unittest.TestCase):
 
     @data(
         ('listen', 'tiger-left', 'tiger-left', 1),
+        ('listen', 'tiger-left', 'tiger-right', 0),
         ('open-left', 'tiger-left', 'tiger-left', 0.5),
+        ('open-left', 'tiger-right', 'tiger-left',0.5),
     )
     @unpack
     def testTransition(self, state, action, nextState, actualProb):
@@ -37,6 +39,7 @@ class TestReward(unittest.TestCase):
     @data(
         ('listen', 'tiger-left', -1),
         ('open-left', 'tiger-left', -100),
+        ('open-left', 'tiger-right', 10),
     )
     @unpack
     def testReward(self, action, state, actualReward):
@@ -56,7 +59,8 @@ class TestObservation(unittest.TestCase):
 
     @data(
         ('listen', 'tiger-left', 'tiger-left', 0.85),
-        ('listen', 'tiger-right', 'tiger-left', 0.15)
+        ('listen', 'tiger-right', 'tiger-left', 0.15),
+        ('open-right', 'tiger-left', 'tiger-left',0.5),
     )
     @unpack
     def testObservation(self, action, state, observation, actualProb):

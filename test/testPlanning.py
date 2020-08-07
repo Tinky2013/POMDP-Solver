@@ -30,10 +30,12 @@ class TestPlanning(unittest.TestCase):
         ([0.4,0.6],'listen'),
         ([0.995,0.005],'open-right'),
         ([0.005,0.995],'open-left'),
+        ([0.0000001,0.9999999],'open-left'),
+        ([0.9999999,0.0000001],'open-right'),
     )
     @unpack
     def testGetBestPlanningAction(self, belief, actualBestAction):
-        pbvi.specifyAlgorithmArguments(beliefPoints)
+        pbvi.specifyAlgorithmArguments(beliefPoints, 5)
         pbvi.planningHorizon(T=2)
         testedTerm = pbvi.getBestPlanningAction(belief)
         testingTerm = actualBestAction
