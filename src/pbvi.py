@@ -135,6 +135,10 @@ class PBVI(PomdpUtility):
         self.solved = True
 
     def expendBeliefPoints(self):
+        '''
+        Define your belief points expension methods
+        Here we use random belief selection for example.
+        '''
         mEnv = self.modelEnv
         newBeliefPoints = [[random.uniform(0,1) for s in mEnv.states]]
         self.beliefPoints = np.vstack((self.beliefPoints, newBeliefPoints))
