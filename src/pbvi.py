@@ -27,7 +27,7 @@ class PBVI(PomdpUtility):
     def specifyAlgorithmArguments(self, beliefPoints, expend):
         PomdpUtility.specifyAlgorithmArguments(self)
         self.beliefPoints = beliefPoints
-        self.expend = expend
+        self.expendN = expend
 
     def calculateGammaAStar(self):
         gammaAStar={
@@ -89,7 +89,7 @@ class PBVI(PomdpUtility):
         return gammaAB
 
 
-    def findBestAlphaVector(self, gammaAB):
+    def updateBestAlphaVectorSet(self, gammaAB):
         '''
         This is Step 3
         Get the best alpha-vector for every belief point
@@ -117,14 +117,13 @@ class PBVI(PomdpUtility):
         # step 2: cross-sum operation
         gammaAB = self.computeCrossSum(gammaAO)
         # step 3: find best action for each belief point
-        self.alphaVectors = self.findBestAlphaVector(gammaAB)
+        self.alphaVectors = self.updateBestAlphaVectorSet(gammaAB)
 
     def planningHorizon(self, T):
         if self.solved:
-            # TODO: Check the planing
             return
-        N = self.expend
-        for expend in range(N):
+
+        for expend in range(self.expendN):
             for iter in range(T):
                 self.backUp()       # every step the alpha-vector will be updated
             self.expendBeliefPoints()
