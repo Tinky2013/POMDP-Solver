@@ -9,6 +9,7 @@ all the algorithm will be included in the super class 'PomdpUtilityr'.
 import numpy as np
 from tools.alphaVector import AlphaVector
 from src.pomdputility import PomdpUtility
+from .pbviBeliefExpansion import BeliefExpension
 from array import array
 import random
 
@@ -24,10 +25,13 @@ class PBVI(PomdpUtility):
         self.gammaAStar = self.calculateGammaAStar()
         self.solved = False
 
+
     def specifyAlgorithmArguments(self, beliefPoints, expend):
         PomdpUtility.specifyAlgorithmArguments(self)
         self.beliefPoints = beliefPoints
         self.expendN = expend
+        self.beliefExpension = BeliefExpension(self.modelEnv)
+
 
     def calculateGammaAStar(self):
         gammaAStar={
@@ -81,6 +85,7 @@ class PBVI(PomdpUtility):
         mEnv = self.modelEnv
         gammaAB = {}
         for a in mEnv.actions:
+            gammaAB[a] = {}
             for bIdx, b in enumerate(self.beliefPoints):
                 gammaAB[a][bIdx] = self.gammaAStar[a].copy()
                 for o in mEnv.observations:     # find the best point for all possible observation
@@ -119,6 +124,7 @@ class PBVI(PomdpUtility):
         # step 3: find best action for each belief point
         self.alphaVectors = self.updateBestAlphaVectorSet(gammaAB)
 
+
     def planningHorizon(self, T):
         if self.solved:
             return
@@ -126,18 +132,13 @@ class PBVI(PomdpUtility):
         for expend in range(self.expendN):
             for iter in range(T):
                 self.backUp()       # every step the alpha-vector will be updated
-            self.expendBeliefPoints()
+            beliefExpendMethod = self.beliefExpension.randomBeliefExpension
+            self.beliefPoints = beliefExpendMethod(self.beliefPoints)
 
         self.solved = True
 
-    def expendBeliefPoints(self):
-        '''
-        Define your belief points expension methods
-        Here we use random belief selection for example.
-        '''
-        mEnv = self.modelEnv
-        newBeliefPoints = [[random.uniform(0,1) for s in mEnv.states]]
-        self.beliefPoints = np.vstack((self.beliefPoints, newBeliefPoints))
+
+
 
 
     def getBestPlanningAction(self, belief):
