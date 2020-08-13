@@ -14,7 +14,7 @@ class PomdpUtility(object):
     Notice: these abstract method should be implemented by certain algorithms
     '''
     @abstractmethod
-    def getBestActionFromPlanning(self, belief):
+    def getPlanningAction(self, belief):
         '''
         This is the POMDP solving part
         :param belief: your belief

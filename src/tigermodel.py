@@ -67,14 +67,11 @@ class TigerModel(object):
 
 
     def updateBelief(self, belief, action, observation):
-        newBelief = []
-        for sj in self.states:
-            Omega = self.observationFunction(action, sj, observation)
-            sumPart = 0
-            for i, si in enumerate(self.states):
-                Trans = self.transitionFunction(action, si, sj)
-                sumPart += Trans * float(belief[i])
-            newBelief.append(Omega * sumPart)
+        newBelief = [
+            self.observationFunction(action, sj, observation)*sum(
+                [self.transitionFunction(action, si, sj) * float(belief[i]) for i, si in enumerate(self.states)]
+            ) for sj in self.states
+        ]
         # get the normalized belief
         normalizedFactor = sum(newBelief)
         normalizedBelief = [x / normalizedFactor for x in newBelief]

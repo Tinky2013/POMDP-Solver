@@ -15,7 +15,7 @@ def main():
         'algo':'pbvi',
         'horizon_T': 2,
         'expend_N': 5,
-        'expend_method': 'SSRA',    # RA, SSRA, SSEA
+        'expend_method': 'SSEA',    # RA, SSRA, SSEA
         'step_size': 0.01,
     }
     envParams = {
@@ -53,10 +53,11 @@ def main():
 
     for i in range(execParams['max_play']):
         # this is a general framework of solving POMDP problems
-        action = solver.getBestActionFromPlanning(belief)       # get best action
+        action = solver.getPlanningAction(belief)       # get best action
         nextState, observation, reward = modelEnv.envFeedback(action)  # receive environment feedback
         belief = modelEnv.updateBelief(belief, action, observation)    # update the belief
         totalRewards += reward
+
         # for every trial, print the result
         if execParams['print_process']:
             print("Play Times: {} || Action Chosen: {} || Observation: {} || Reward: {} || New State: {} || New Belief: {}".format(i,action,observation,reward,nextState,belief))

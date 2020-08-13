@@ -25,8 +25,4 @@ def generateUniformBeliefs(states):
 
 def distanceL1(u,v):
     assert(len(u)==len(v))
-    Distance = 0
-    for i in range(len(u)):
-        Distance += abs(u[i]-v[i])
-
-    return Distance
+    return sum(list(map(lambda x,y:abs(x-y), u, v)))

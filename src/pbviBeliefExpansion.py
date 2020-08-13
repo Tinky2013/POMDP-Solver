@@ -18,6 +18,7 @@ class BeliefExpension():
         newBeliefPoints = [[random.uniform(0,1) for s in mEnv.states]]
         return np.vstack((oldBeliefPoints, newBeliefPoints))
 
+
     def simulationWithRandomAction(self, oldBeliefPoints):
         '''
         SSRA (Stochastic Simulation with Random Action)
@@ -26,8 +27,7 @@ class BeliefExpension():
         belief = [random.uniform(0, 1) for s in mEnv.states]
         action = random.choice(mEnv.actions)
         nextState, observation, reward = mEnv.envFeedback(action)  # receive environment feedback
-        newBelief = mEnv.updateBelief(belief, action, observation)  # update the belief
-        newBeliefPoints = [newBelief]
+        newBeliefPoints = [mEnv.updateBelief(belief, action, observation)]  # update the belief
         return np.vstack((oldBeliefPoints, newBeliefPoints))
 
 
@@ -42,15 +42,11 @@ class BeliefExpension():
         for action in mEnv.actions:
             nextState, observation, reward = mEnv.envFeedback(action)  # receive environment feedback
             newBelief = mEnv.updateBelief(belief, action, observation)  # update the belief
-            totalDistance = 0
-            for b in oldBeliefPoints:
-                totalDistance += distanceL1(newBelief, list(b))
-
-            if totalDistance > farthestDistance:
+            sumDistance = sum([distanceL1(newBelief, list(b)) for b in oldBeliefPoints])
+            if sumDistance > farthestDistance:
                 farthestBeliefPoints = newBelief
-                farthestDistance = totalDistance
+                farthestDistance = sumDistance
+        return np.vstack((oldBeliefPoints, [farthestBeliefPoints]))
 
-        newBeliefPoints = [farthestBeliefPoints]
-        return np.vstack((oldBeliefPoints, newBeliefPoints))
 
 

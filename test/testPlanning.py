@@ -55,8 +55,8 @@ class TestPlanning(unittest.TestCase):
     @unpack
     def testGetBestPlanningAction(self, belief, actualBestAction):
         pbvi.specifyAlgorithmArguments(beliefPoints, 5)
-        pbvi.getBestActionFromPlanning(T=2)
-        testedTerm = pbvi.getBestAlphaVector(belief)
+        pbvi.getPlanningAction(T=2)
+        testedTerm = pbvi.getBestAction(belief)
         testingTerm = actualBestAction
         self.assertEqual(testedTerm, testingTerm)
 
