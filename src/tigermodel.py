@@ -65,6 +65,7 @@ class TigerModel(object):
         reward = self.rewardFunction(action, state)
         return nextState, observation, reward
 
+
     def updateBelief(self, belief, action, observation):
         newBelief = []
         for sj in self.states:

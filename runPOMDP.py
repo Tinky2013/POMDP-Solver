@@ -13,8 +13,9 @@ def main():
     }
     algoParams = {
         'algo':'pbvi',
-        'T': 2,
-        'expendN': 5,
+        'horizon_T': 2,
+        'expend_N': 5,
+        'expend_method': 'SSRA',    # RA, SSRA, SSEA
         'step_size': 0.01,
     }
     envParams = {
@@ -38,7 +39,7 @@ def main():
     solver = PBVI(modelEnv)
 
     beliefPoints = generateInitBeliefPoints(modelEnv.states, algoParams['step_size'])
-    solver.specifyAlgorithmArguments(beliefPoints,algoParams['expendN'])
+    solver.specifyAlgorithmArguments(beliefPoints,algoParams)
 
     # 5. choose your visualization part
     #visualizer.visualizeBeliefPoint(beliefPoints)
@@ -48,12 +49,11 @@ def main():
     totalRewards = 0
     belief = generateUniformBeliefs(modelEnv.states)    # for model evaluation
     print('''Initial State: {} || Initial Belief: {} || Time Horizon: {} || Max Play: {}
-        '''.format(modelEnv.currentState,belief,algoParams['T'],execParams['max_play']))
+        '''.format(modelEnv.currentState,belief,algoParams['horizon_T'],execParams['max_play']))
 
     for i in range(execParams['max_play']):
         # this is a general framework of solving POMDP problems
-        solver.planningHorizon(algoParams['T'])                               # planning
-        action = solver.getBestPlanningAction(belief)                        # get best action
+        action = solver.getBestActionFromPlanning(belief)       # get best action
         nextState, observation, reward = modelEnv.envFeedback(action)  # receive environment feedback
         belief = modelEnv.updateBelief(belief, action, observation)    # update the belief
         totalRewards += reward

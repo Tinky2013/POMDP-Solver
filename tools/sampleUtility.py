@@ -22,3 +22,11 @@ def generateUniformBeliefs(states):
     stateNUM = len(states)
     Beliefs = [1/stateNUM for i in range(stateNUM)]
     return Beliefs
+
+def distanceL1(u,v):
+    assert(len(u)==len(v))
+    Distance = 0
+    for i in range(len(u)):
+        Distance += abs(u[i]-v[i])
+
+    return Distance

@@ -26,11 +26,20 @@ class PBVI(PomdpUtility):
         self.solved = False
 
 
-    def specifyAlgorithmArguments(self, beliefPoints, expend):
+    def specifyAlgorithmArguments(self, beliefPoints, algoParam):
         PomdpUtility.specifyAlgorithmArguments(self)
         self.beliefPoints = beliefPoints
-        self.expendN = expend
+        self.horizonT = algoParam['horizon_T']
+        self.expendN = algoParam['expend_N']
         self.beliefExpension = BeliefExpension(self.modelEnv)
+
+        if algoParam['expend_method'] == 'RA':
+            self.beliefExpendMethod = self.beliefExpension.randomBeliefSelection
+        elif algoParam['expend_method'] == 'SSRA':
+            self.beliefExpendMethod = self.beliefExpension.simulationWithRandomAction
+        elif algoParam['expend_method'] == 'SSEA':
+            self.beliefExpendMethod = self.beliefExpension.simulationWithExploratoryAction
+
 
 
     def calculateGammaAStar(self):
@@ -124,22 +133,7 @@ class PBVI(PomdpUtility):
         # step 3: find best action for each belief point
         self.alphaVectors = self.updateBestAlphaVectorSet(gammaAB)
 
-
-    def planningHorizon(self, T):
-        if self.solved:
-            return
-
-        for expend in range(self.expendN):
-            for iter in range(T):
-                self.backUp()       # every step the alpha-vector will be updated
-            beliefExpendMethod = self.beliefExpension.randomBeliefExpension
-            self.beliefPoints = beliefExpendMethod(self.beliefPoints)
-
-        self.solved = True
-
-
-
-    def getBestPlanningAction(self, belief):
+    def getBestAlphaVector(self, belief):
         maxValue = -np.inf
         bestVector = None
         for alphaVector in self.alphaVectors:
@@ -147,7 +141,22 @@ class PBVI(PomdpUtility):
             if value > maxValue:
                 maxValue = value
                 bestVector = alphaVector
+        return bestVector
+
+
+    def getBestActionFromPlanning(self, belief):
+        # Planning Process
+        if self.solved == False:
+            for expend in range(self.expendN):
+                for iter in range(self.horizonT):
+                    self.backUp()       # every step the alpha-vector will be updated
+                self.beliefPoints = self.beliefExpendMethod(self.beliefPoints)
+            self.solved = True
+        # choose best action
+        bestVector = self.getBestAlphaVector(belief)
         return bestVector.action
+
+
 
 
 

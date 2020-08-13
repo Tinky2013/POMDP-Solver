@@ -14,28 +14,10 @@ class PomdpUtility(object):
     Notice: these abstract method should be implemented by certain algorithms
     '''
     @abstractmethod
-    def planningHorizon(self, T):
+    def getBestActionFromPlanning(self, belief):
         '''
         This is the POMDP solving part
-        :param T: planing horizon
-        '''
-
-    @abstractmethod
-    def updateBelief(self, belief, action, observation):
-        '''
-        This is the function update the belief distribution according to the environment feedback
-        :param belief: previous belief distribution (array).
-        :param action: action name (str).
-        :param observation: observation name (str).
-        :return: updated belief distribution (array).
-        '''
-
-    @abstractmethod
-    def getBestPlanningAction(self, belief):
-        '''
-        This is the function help us choose the best action
-        :param belief: belief distribution (array).
-        :return: action name (str).
+        :param belief: your belief
         '''
 
     @abstractmethod
@@ -45,12 +27,4 @@ class PomdpUtility(object):
         :param args: additional arguments for the algorithm
         :return:
         '''
-
-    def envFeedback(self, action):
-        '''
-        Just for external usage
-        :param action:
-        :return: nextState, observation, reward
-        '''
-        return self.modelEnv.envFeedback(action)
 
