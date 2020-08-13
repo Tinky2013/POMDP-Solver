@@ -22,11 +22,19 @@ envParams = {
         'obs_incorrect_prob': 0.15,
     }
 }
+algoParams = {
+    'algo': 'pbvi',
+    'horizon_T': 2,
+    'expend_N': 5,
+    'expend_method': 'SSEA',  # RA, SSRA, SSEA
+    'step_size': 0.01,
+}
 
 modelEnv = TigerModel()
 modelEnv.specifyEnvironmentArguments(envParams)
 pbvi = PBVI(modelEnv)
 beliefPoints = generateInitBeliefPoints(modelEnv.states, stepsize=0.01)
+
 
 @ddt
 class TestPlanning(unittest.TestCase):
@@ -54,9 +62,8 @@ class TestPlanning(unittest.TestCase):
     )
     @unpack
     def testGetBestPlanningAction(self, belief, actualBestAction):
-        pbvi.specifyAlgorithmArguments(beliefPoints, 5)
-        pbvi.getPlanningAction(T=2)
-        testedTerm = pbvi.getBestAction(belief)
+        pbvi.specifyAlgorithmArguments(beliefPoints, algoParams)
+        testedTerm = pbvi.getPlanningAction(belief)
         testingTerm = actualBestAction
         self.assertEqual(testedTerm, testingTerm)
 

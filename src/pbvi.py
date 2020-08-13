@@ -104,7 +104,7 @@ class PBVI(PomdpUtility):
         self.alphaVectors = [self.findBestAlphaVector(gammaAB, bIdx, b) for bIdx, b in enumerate(self.beliefPoints)]
 
 
-    def getBestAction(self, belief):
+    def getBestActionVec(self, belief):
         maxValue = -np.inf
         bestVector = None
         for alphaVector in self.alphaVectors:
@@ -126,7 +126,7 @@ class PBVI(PomdpUtility):
             self.solved = True
 
         # choose best action
-        bestVector = self.getBestAction(belief)
+        bestVector = self.getBestActionVec(belief)
         return bestVector.action
 
 
