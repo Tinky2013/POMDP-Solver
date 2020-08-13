@@ -11,7 +11,7 @@ def chooseItemIdx(probs):
     probs = np.array(probs)
     return np.random.choice(list(range(len(probs))), p=probs/probs.sum())
 
-def generateBeliefPoints(states, stepsize):
+def generateInitBeliefPoints(states, stepsize):
     '''
     Here we used uniform random over the belief simplex
     '''

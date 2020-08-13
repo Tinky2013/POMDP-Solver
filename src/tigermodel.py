@@ -12,8 +12,6 @@ import numpy as np
 
 class TigerModel(object):
     def __init__(self):
-        self.discount = 0.75
-
         # tiger environment
         self.states = ['tiger-left', 'tiger-right']
         self.actions = ['listen', 'open-left', 'open-right']
@@ -22,6 +20,11 @@ class TigerModel(object):
         # other settings
         self.initState = None
         self.currentState = self.initState or np.random.choice(self.states)
+
+    def specifyEnvironmentArguments(self, param):
+        self.discount = param['discount']
+        self.rewardParam = param['reward_param']
+        self.observationParam = param['observation_param']
 
     '''
     Here's some property of the tiger model
@@ -43,11 +46,11 @@ class TigerModel(object):
         return transitions(action, state, nextState)
 
     def rewardFunction(self, action, state):
-        rewards = TigerReward()
+        rewards = TigerReward(self.rewardParam)
         return rewards(action, state)
 
     def observationFunction(self, action, state, observation):
-        observations = TigerObservation()
+        observations = TigerObservation(self.observationParam)
         return observations(action, state, observation)
 
     def envFeedback(self, action):
@@ -62,6 +65,19 @@ class TigerModel(object):
         reward = self.rewardFunction(action, state)
         return nextState, observation, reward
 
+    def updateBelief(self, belief, action, observation):
+        newBelief = []
+        for sj in self.states:
+            Omega = self.observationFunction(action, sj, observation)
+            sumPart = 0
+            for i, si in enumerate(self.states):
+                Trans = self.transitionFunction(action, si, sj)
+                sumPart += Trans * float(belief[i])
+            newBelief.append(Omega * sumPart)
+        # get the normalized belief
+        normalizedFactor = sum(newBelief)
+        normalizedBelief = [x / normalizedFactor for x in newBelief]
+        return normalizedBelief  # return array with length=stateDim
 
 
 

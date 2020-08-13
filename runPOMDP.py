@@ -1,12 +1,11 @@
 from src.tigermodel import TigerModel
 from src.pbvi import PBVI
 
-from tools.sampleUtility import generateBeliefPoints, generateUniformBeliefs
+from tools.sampleUtility import generateInitBeliefPoints, generateUniformBeliefs
 
 from visualization.visualizeTiger import VisualizedTiger
 
 def main():
-    # 1. choose your parameters
     execParams = {
         'model_name': 'Tiger',
         'max_play': 100,
@@ -18,27 +17,27 @@ def main():
         'expendN': 5,
         'step_size': 0.01,
     }
+    envParams = {
+        'env_name': 'Tiger_env',
+        'discount': 0.75,
+        'reward_param': {
+            'open_correct_reward': 10.,
+            'open_incorrect_cost': -100.,
+            'listen_cost': -1.,
+        },
+        'observation_param': {
+            'obs_correct_prob': 0.85,
+            'obs_incorrect_prob': 0.15,
+        }
+    }
 
-    modelEnv = None     # model environment
-    solver = None        # solver
-    visualizer = None
 
-    # 2. choose your environment
-    if execParams['model_name'] == 'Tiger':
-        modelEnv = TigerModel()
-        visualizer= VisualizedTiger()
-    else:
-        pass
+    modelEnv = TigerModel()
+    modelEnv.specifyEnvironmentArguments(envParams)
+    visualizer= VisualizedTiger()
+    solver = PBVI(modelEnv)
 
-    # 3. choose your solver
-    if algoParams['algo'] == 'pbvi':
-        solver = PBVI(modelEnv)
-    else:
-        pass
-
-    # 4. choose your belief generation method
-    belief = generateUniformBeliefs(modelEnv.states)        # initial belief: [0.5,0.5]
-    beliefPoints = generateBeliefPoints(modelEnv.states, algoParams['step_size'])
+    beliefPoints = generateInitBeliefPoints(modelEnv.states, algoParams['step_size'])
     solver.specifyAlgorithmArguments(beliefPoints,algoParams['expendN'])
 
     # 5. choose your visualization part
@@ -47,15 +46,16 @@ def main():
 
     # start playing
     totalRewards = 0
-    if execParams['print_process']:
-        print('''Initial State: {} || Initial Belief: {} || Time Horizon: {} || Max Play: {}
+    belief = generateUniformBeliefs(modelEnv.states)    # for model evaluation
+    print('''Initial State: {} || Initial Belief: {} || Time Horizon: {} || Max Play: {}
         '''.format(modelEnv.currentState,belief,algoParams['T'],execParams['max_play']))
+
     for i in range(execParams['max_play']):
         # this is a general framework of solving POMDP problems
         solver.planningHorizon(algoParams['T'])                               # planning
         action = solver.getBestPlanningAction(belief)                        # get best action
-        nextState, observation, reward = solver.envFeedback(action)  # receive environment feedback
-        belief = solver.updateBelief(belief, action, observation)    # update the belief
+        nextState, observation, reward = modelEnv.envFeedback(action)  # receive environment feedback
+        belief = modelEnv.updateBelief(belief, action, observation)    # update the belief
         totalRewards += reward
         # for every trial, print the result
         if execParams['print_process']:

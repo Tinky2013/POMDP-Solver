@@ -22,16 +22,16 @@ class TigerTransition():
         return nextStateProb
 
 class TigerReward():
-    def __init__(self):
+    def __init__(self, rewardParam):
         self.rewardMatrix = {
-            ('listen', 'tiger-left'): -1.0,
-            ('listen', 'tiger-right'): -1.0,
+            ('listen', 'tiger-left'): rewardParam['listen_cost'],
+            ('listen', 'tiger-right'): rewardParam['listen_cost'],
 
-            ('open-left', 'tiger-left'): -100.0,
-            ('open-left', 'tiger-right'): 10.0,
+            ('open-left', 'tiger-left'): rewardParam['open_incorrect_cost'],
+            ('open-left', 'tiger-right'): rewardParam['open_correct_reward'],
 
-            ('open-right', 'tiger-left'): 10.0,
-            ('open-right', 'tiger-right'): -100.0
+            ('open-right', 'tiger-left'): rewardParam['open_correct_reward'],
+            ('open-right', 'tiger-right'): rewardParam['open_incorrect_cost']
         }
 
     def __call__(self, action, state):
@@ -39,12 +39,12 @@ class TigerReward():
         return rewardFixed
 
 class TigerObservation():
-    def __init__(self):
+    def __init__(self, observationParam):
         self.observationMatrix = {
-            ('listen', 'tiger-left', 'tiger-left'): 0.85,
-            ('listen', 'tiger-left', 'tiger-right'): 0.15,
-            ('listen', 'tiger-right', 'tiger-left'): 0.15,
-            ('listen', 'tiger-right', 'tiger-right'): 0.85,
+            ('listen', 'tiger-left', 'tiger-left'): observationParam['obs_correct_prob'],
+            ('listen', 'tiger-left', 'tiger-right'): observationParam['obs_incorrect_prob'],
+            ('listen', 'tiger-right', 'tiger-left'): observationParam['obs_incorrect_prob'],
+            ('listen', 'tiger-right', 'tiger-right'): observationParam['obs_correct_prob'],
 
             ('open-left', 'tiger-left', 'tiger-left'): 0.5,
             ('open-left', 'tiger-left', 'tiger-right'): 0.5,

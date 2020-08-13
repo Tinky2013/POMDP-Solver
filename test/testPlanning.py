@@ -5,13 +5,28 @@ from src.pbvi import PBVI
 from src.tigermodel import TigerModel
 import sys
 
-from tools.sampleUtility import generateBeliefPoints
+from tools.sampleUtility import generateInitBeliefPoints
 
 sys.path.append("..")
 
+envParams = {
+    'env_name': 'Tiger_env',
+    'discount': 0.75,
+    'reward_param': {
+        'open_correct_reward': 10.,
+        'open_incorrect_cost': -100.,
+        'listen_cost': -1.,
+    },
+    'observation_param': {
+        'obs_correct_prob': 0.85,
+        'obs_incorrect_prob': 0.15,
+    }
+}
+
 modelEnv = TigerModel()
+modelEnv.specifyEnvironmentArguments(envParams)
 pbvi = PBVI(modelEnv)
-beliefPoints = generateBeliefPoints(modelEnv.states, stepsize=0.01)
+beliefPoints = generateInitBeliefPoints(modelEnv.states, stepsize=0.01)
 
 @ddt
 class TestPlanning(unittest.TestCase):

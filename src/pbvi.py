@@ -139,8 +139,6 @@ class PBVI(PomdpUtility):
 
 
 
-
-
     def getBestPlanningAction(self, belief):
         maxValue = -np.inf
         bestVector = None
@@ -152,17 +150,4 @@ class PBVI(PomdpUtility):
         return bestVector.action
 
 
-    def updateBelief(self, belief, action, observation):
-        mEnv = self.modelEnv
-        newBelief = []
-        for sj in mEnv.states:
-            Omega = mEnv.observationFunction(action, sj, observation)
-            sumPart = 0
-            for i, si in enumerate(mEnv.states):
-                Trans = mEnv.transitionFunction(action, si, sj)
-                sumPart += Trans * float(belief[i])
-            newBelief.append(Omega * sumPart)
-        # get the normalized belief
-        normalizedFactor = sum(newBelief)
-        normalizedBelief = [x / normalizedFactor for x in newBelief]
-        return normalizedBelief  # return array with length=stateDim
+

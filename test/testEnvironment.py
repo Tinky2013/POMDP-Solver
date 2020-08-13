@@ -43,7 +43,12 @@ class TestReward(unittest.TestCase):
     )
     @unpack
     def testReward(self, action, state, actualReward):
-        tigerReward = TigerReward()
+        rewardParam = {
+            'open_correct_reward': 10,
+            'open_incorrect_cost': -100,
+            'listen_cost': -1,
+        }
+        tigerReward = TigerReward(rewardParam)
         testedTerm = tigerReward(action, state)
         testingTerm = actualReward
         self.assertEqual(testedTerm, testingTerm)
@@ -64,7 +69,11 @@ class TestObservation(unittest.TestCase):
     )
     @unpack
     def testObservation(self, action, state, observation, actualProb):
-        tigerObservation = TigerObservation()
+        observationParam = {
+            'obs_correct_prob': 0.85,
+            'obs_incorrect_prob': 0.15,
+        }
+        tigerObservation = TigerObservation(observationParam)
         testedTerm = tigerObservation(action, state, observation)
         testingTerm = actualProb
         self.assertEqual(testedTerm, testingTerm)

@@ -1,13 +1,26 @@
 import unittest
 from ddt import ddt, data, unpack
 
-from src.pbvi import PBVI
 from src.tigermodel import TigerModel
 import sys
 sys.path.append("..")
 
+envParams = {
+    'env_name': 'Tiger_env',
+    'discount': 0.75,
+    'reward_param': {
+        'open_correct_reward': 10.,
+        'open_incorrect_cost': -100.,
+        'listen_cost': -1.,
+    },
+    'observation_param': {
+        'obs_correct_prob': 0.85,
+        'obs_incorrect_prob': 0.15,
+    }
+}
+
 modelEnv = TigerModel()
-pbvi = PBVI(modelEnv)
+modelEnv.specifyEnvironmentArguments(envParams)
 
 @ddt
 class TestUpdateBelief(unittest.TestCase):
@@ -27,7 +40,7 @@ class TestUpdateBelief(unittest.TestCase):
     )
     @unpack
     def testUpdateBelief(self, belief, action, observation, actualNormalizedBelief):
-        testedTerm = pbvi.updateBelief(belief, action, observation)
+        testedTerm = modelEnv.updateBelief(belief, action, observation)
         testingTerm = actualNormalizedBelief
         self.assertEqual(testedTerm, testingTerm)
 
