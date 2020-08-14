@@ -4,6 +4,8 @@ from src.pbvi import PBVI
 from tools.sampleUtility import generateInitBeliefPoints, generateUniformBeliefs
 
 from visualization.visualizeTiger import VisualizedTiger
+import datetime
+
 
 def main():
     execParams = {
@@ -13,7 +15,7 @@ def main():
     }
     algoParams = {
         'algo':'pbvi',
-        'horizon_T': 2,
+        'horizon_T': 1,
         'expend_N': 5,
         'expend_method': 'SSEA',    # RA, SSRA, SSEA
         'step_size': 0.01,
@@ -50,6 +52,7 @@ def main():
     belief = generateUniformBeliefs(modelEnv.states)    # for model evaluation
     print('''Initial State: {} || Initial Belief: {} || Time Horizon: {} || Max Play: {}
         '''.format(modelEnv.currentState,belief,algoParams['horizon_T'],execParams['max_play']))
+    starttime = datetime.datetime.now()
 
     for i in range(execParams['max_play']):
         # this is a general framework of solving POMDP problems
@@ -62,7 +65,10 @@ def main():
         if execParams['print_process']:
             print("Play Times: {} || Action Chosen: {} || Observation: {} || Reward: {} || New State: {} || New Belief: {}".format(i,action,observation,reward,nextState,belief))
     print("Total reward:{}".format(totalRewards))
-
+    # record the playing time
+    endtime = datetime.datetime.now()
+    timegap = endtime - starttime
+    print("Playing time:  {}.{} sec".format(timegap.seconds,timegap.microseconds))
 
 
 if __name__ == '__main__':
