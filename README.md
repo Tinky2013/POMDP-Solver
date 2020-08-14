@@ -24,5 +24,5 @@ Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point
 * exec: Model evaluation for different conditions (different parameter settings).
 
 * visualization
-  * [**visualizeTiger.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/visualization/visualizeTiger.py).
+  * [**visualizeTiger.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/visualization/visualizeTiger.py): Visualize tiger model structure.
   * visualizeExec: Visualize the evaluation results.
