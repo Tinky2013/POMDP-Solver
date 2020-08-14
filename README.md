@@ -6,7 +6,7 @@ Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point
 
 **File Organization**
 
-* [**runPOMDP.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/runPOMDP.py): Executable File.
+* [**runPomdpExample.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/runPomdpExample.py): Executable example.
 
 * src
   * [**pomdputility.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/pomdputility.py): Super class for all the solvers (although we only implement PBVI now, it will make it easier to add other solvers).
@@ -21,5 +21,8 @@ Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point
   * [**alphaVector.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/tools/alphaVector.py): Alpha-Vector data structure.
   * [**sampleUtility.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/tools/sampleUtility.py): Sampling method packages.
 
+* exec: Model evaluation for different conditions (different parameter settings).
+
 * visualization
   * [**visualizeTiger.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/visualization/visualizeTiger.py).
+  * visualizeExec: Visualize the evaluation results.
