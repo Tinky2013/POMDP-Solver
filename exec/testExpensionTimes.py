@@ -17,7 +17,7 @@ def main():
         'horizon_T': 10,
         'expend_N': 1,              # when testing generation times, expend_N should be 1
         'expend_method': 'SSEA',    # RA, SSRA, SSEA
-        'step_size': 0.6,
+        'step_size': 0.6,           # two initial belief points (tiger problem is really small scale)
     }
     envParams = {
         'env_name': 'Tiger_env',
@@ -44,7 +44,7 @@ def main():
     timeRecord = []
     rewardRecord = []
     for gen in range(200):
-        # more times lopping, more accurate solution
+        # more belief points, more accurate solution
         beliefExpension = BeliefExpension(modelEnv)
         beliefExpendMethod = beliefExpension.simulationWithExploratoryAction
         for newP in range(1):  # how much new belief points we generate each time
@@ -59,7 +59,7 @@ def main():
             print('''Initial State: {} || Initial Belief: {} || Time Horizon: {} || Max Play: {}
                 '''.format(modelEnv.currentState,belief,algoParams['horizon_T'],execParams['max_play']))
 
-
+        # 100-play process
         for i in range(execParams['max_play']):
             # this is a general framework of solving POMDP problems
             action = solver.getPlanningAction(belief)       # get best action
