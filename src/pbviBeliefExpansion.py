@@ -1,6 +1,7 @@
 import random
 import numpy as np
 from tools.sampleUtility import distanceL1
+from src.pomdputility import EnvFeedback, UpdateBelief
 
 class BeliefExpension():
     '''
@@ -8,6 +9,8 @@ class BeliefExpension():
     '''
     def __init__(self, mEnv):
         self.modelEnv = mEnv
+        self.envFeedback = EnvFeedback(mEnv)
+        self.updateBelief = UpdateBelief(mEnv)
 
 
     def randomBeliefSelection(self, oldBeliefPoints):
@@ -26,8 +29,8 @@ class BeliefExpension():
         mEnv = self.modelEnv
         belief = [random.uniform(0, 1) for s in mEnv.states]
         action = random.choice(mEnv.actions)
-        nextState, observation, reward = mEnv.envFeedback(action)  # receive environment feedback
-        newBeliefPoints = [mEnv.updateBelief(belief, action, observation)]  # update the belief
+        nextState, observation, reward = self.envFeedback(action)  # receive environment feedback
+        newBeliefPoints = [self.updateBelief(belief, action, observation)]  # update the belief
         return np.vstack((oldBeliefPoints, newBeliefPoints))
 
 
@@ -40,8 +43,8 @@ class BeliefExpension():
         farthestBeliefPoints = None
         farthestDistance = -np.inf
         for action in mEnv.actions:
-            nextState, observation, reward = mEnv.envFeedback(action)  # receive environment feedback
-            newBelief = mEnv.updateBelief(belief, action, observation)  # update the belief
+            nextState, observation, reward = self.envFeedback(action)  # receive environment feedback
+            newBelief = self.updateBelief(belief, action, observation)  # update the belief
             sumDistance = sum([distanceL1(newBelief, list(b)) for b in oldBeliefPoints])
             if sumDistance > farthestDistance:
                 farthestBeliefPoints = newBelief

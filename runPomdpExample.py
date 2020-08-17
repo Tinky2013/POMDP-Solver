@@ -1,5 +1,6 @@
 from src.tigermodel import TigerModel
 from src.pbvi import PBVI
+from src.pomdputility import EnvFeedback, UpdateBelief
 
 from tools.sampleUtility import generateInitBeliefPoints, generateUniformBeliefs
 
@@ -17,7 +18,7 @@ def main():
         'algo':'pbvi',
         'horizon_T': 10,
         'expend_N': 5,
-        'expend_method': 'SSEA',    # RA, SSRA, SSEA
+        'expend_method': 'RA',    # RA, SSRA, SSEA
         'step_size': 0.01,
     }
     envParams = {
@@ -39,6 +40,8 @@ def main():
     modelEnv.specifyEnvironmentArguments(envParams)
     visualizer= VisualizedTiger()
     solver = PBVI(modelEnv)
+    envFeedback = EnvFeedback(modelEnv)
+    updateBelief = UpdateBelief(modelEnv)
 
     beliefPoints = generateInitBeliefPoints(modelEnv.states, algoParams['step_size'])
     solver.specifyAlgorithmArguments(beliefPoints,algoParams)
@@ -58,8 +61,8 @@ def main():
     for i in range(execParams['max_play']):
         # this is a general framework of solving POMDP problems
         action = solver.getPlanningAction(belief)       # get best action
-        nextState, observation, reward = modelEnv.envFeedback(action)  # receive environment feedback
-        belief = modelEnv.updateBelief(belief, action, observation)    # update the belief
+        nextState, observation, reward = envFeedback(action)  # receive environment feedback
+        belief = updateBelief(belief, action, observation)    # update the belief
         totalRewards += reward
 
         # for every trial, print the result

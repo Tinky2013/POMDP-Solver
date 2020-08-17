@@ -8,7 +8,7 @@ all the algorithm will be included in the super class 'PomdpUtilityr'.
 
 import numpy as np
 from tools.alphaVector import AlphaVector
-from src.pomdputility import PomdpUtility
+from src.pomdputility import PomdpSolver
 from .pbviBeliefExpansion import BeliefExpension
 from array import array
 import random
@@ -16,9 +16,9 @@ import random
 np.random.seed()
 random.seed()
 
-class PBVI(PomdpUtility):
+class PBVI(PomdpSolver):
     def __init__(self, modelEnv):
-        PomdpUtility.__init__(self, modelEnv)
+        PomdpSolver.__init__(self, modelEnv)
         self.modelEnv = modelEnv
         self.beliefPoints = None
         self.alphaVectors = [AlphaVector(action=-1, value=np.zeros(self.modelEnv.stateDim))]
@@ -27,7 +27,7 @@ class PBVI(PomdpUtility):
 
 
     def specifyAlgorithmArguments(self, beliefPoints, algoParam):
-        PomdpUtility.specifyAlgorithmArguments(self)
+        PomdpSolver.specifyAlgorithmArguments(self)
         self.beliefPoints = beliefPoints
         self.horizonT = algoParam['horizon_T']
         self.expendN = algoParam['expend_N']
