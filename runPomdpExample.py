@@ -19,7 +19,7 @@ def main():
         'horizon_T': 10,
         'expend_N': 5,
         'expend_method': 'RA',    # RA, SSRA, SSEA
-        'step_size': 0.01,
+        'num_belief': 100,
     }
     envParams = {
         'env_name': 'Tiger_env',
@@ -43,7 +43,7 @@ def main():
     envFeedback = EnvFeedback(modelEnv)
     updateBelief = UpdateBelief(modelEnv)
 
-    beliefPoints = generateInitBeliefPoints(modelEnv.states, algoParams['step_size'])
+    beliefPoints = generateInitBeliefPoints(modelEnv.states, algoParams['num_belief'])
     solver.specifyAlgorithmArguments(beliefPoints,algoParams)
 
     # 5. choose your visualization part
