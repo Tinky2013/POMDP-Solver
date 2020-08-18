@@ -18,7 +18,7 @@ def main():
         'algo':'pbvi',
         'horizon_T': 10,
         'expend_N': 5,
-        'expend_method': 'RA',    # RA, SSRA, SSEA
+        'expend_method': 'SSRA',    # RA, SSRA, SSEA
         'num_belief': 100,
     }
     envParams = {
