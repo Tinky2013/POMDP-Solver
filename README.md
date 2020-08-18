@@ -12,7 +12,7 @@ Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point
   * [**pomdputility.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/pomdputility.py): Super class for all the solvers (although we only implement PBVI now, it will make it easier to add other solvers).
   * [**pbvi.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/pbvi.py): Core code of PBVI (Point Based Value Iteration).
   * [**pbviBeliefExpension.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/pbviBeliefExpansion.py): Belief Expension Method for PBVI.
-  * [**tigermodel.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/tigermodel.py): Model setting part (Receives information from tiger environment).
+  * [**tigermodel.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/tigermodel.py): Model setting part (Get information of tiger environment).
 
 * Environment
   * [**tigerEnvironment.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/Environment/tigerEnvironment.py): Task Environment of Two-Tiger Problem.
