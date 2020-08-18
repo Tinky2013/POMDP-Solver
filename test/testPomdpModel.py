@@ -66,7 +66,7 @@ class TestTigerEnvFeedback(unittest.TestCase):
         ('open-right',10,-100),
     )
     @unpack
-    def testFeedback(self, action, reward1, reward2):
+    def testActionRewardFeedback(self, action, reward1, reward2):
         modelEnv.specifyEnvironmentArguments(envParams)
         s, o, r = envFeedback(action)
         testedTerm = r

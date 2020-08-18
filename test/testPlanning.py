@@ -48,6 +48,10 @@ class TestGetBestPlanningAction(unittest.TestCase):
 
     @data(
         ([0.5,0.5],'listen'),
+        ([0.6,0.4],'listen'),
+        ([0.4,0.6],'listen'),
+        ([0.99,0.01],'open-right'),
+        ([0.01,0.99],'open-left'),
         ([1.,0.],'open-right'),
         ([0.,1.],'open-left'),
     )
