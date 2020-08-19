@@ -5,7 +5,6 @@ from Environment.tagEnvironment import TagTransition, TagReward, TagObservation
 import sys
 sys.path.append("..")
 
-
 @ddt
 class TestTagTransition(unittest.TestCase):
     def setUp(self):
@@ -79,8 +78,8 @@ class TestTagTransition(unittest.TestCase):
         ('Tag', 'r[3,6]n[2,7]', 'r[3,6]n[1,7]', 0.8 / 1),
         # oppoState at corner
         # northwest
-        ('Tag', 'r[0,1]n[1,0]', 'r[0,1]n[1,1]', 0.8 / 1),
-        ('Tag', 'r[0,1]n[1,0]', 'r[0,1]n[0,0]', 0.8 / 1),
+        ('Tag', 'r[0,0]n[1,0]', 'r[0,0]n[1,1]', 0.8 / 1),
+        ('Tag', 'r[1,1]n[1,0]', 'r[1,1]n[0,0]', 0.8 / 1),
         ('Tag', 'r[2,5]n[1,0]', 'r[2,5]n[0,0]', 0.8 / 1),
         # northeast
         ('Tag', 'r[1,1]n[1,9]', 'r[1,1]n[0,9]', 0.8 / 1),
@@ -94,11 +93,11 @@ class TestTagTransition(unittest.TestCase):
         ('Tag', 'r[0,1]n[0,0]', 'r[0,1]n[1,0]', 0.8 / 1),
 
         # did not get caught
-        ('North', 'r[1,5]n[1,6]', 'r[1,6]n[1,5]', 0.8 / 4),
-        ('North', 'r[1,5]n[1,6]', 'r[1,6]n[1,7]', 0.8 / 4),
-        ('North', 'r[1,5]n[1,6]', 'r[1,6]n[2,6]', 0.8 / 4),
-        ('North', 'r[1,5]n[1,6]', 'r[1,6]n[0,6]', 0.8 / 4),
-        ('North', 'r[1,5]n[1,6]', 'r[1,6]n[1,6]', 0.2),
+        ('East', 'r[1,5]n[1,6]', 'r[1,6]n[1,5]', 0.8 / 4),
+        ('East', 'r[1,5]n[1,6]', 'r[1,6]n[1,7]', 0.8 / 4),
+        ('East', 'r[1,5]n[1,6]', 'r[1,6]n[2,6]', 0.8 / 4),
+        ('East', 'r[1,5]n[1,6]', 'r[1,6]n[0,6]', 0.8 / 4),
+        ('East', 'r[1,5]n[1,6]', 'r[1,6]n[1,6]', 0.2),
 
         ('North', 'r[1,6]n[1,6]', 'r[2,6]n[0,6]', 0.8 / 3),
         ('North', 'r[1,6]n[1,6]', 'r[2,6]n[1,5]', 0.8 / 3),
@@ -124,10 +123,11 @@ class TestTagTransition(unittest.TestCase):
         self.assertEqual(testedTerm, testingTerm)
 
     @data(
-        ('[0,6]', '[1,6]', 'Same Row or Col'),
-        ('[2,6]', '[1,6]', 'Same Row or Col'),
-        ('[1,0]', '[1,6]', 'Same Row or Col'),
-        ('[1,9]', '[1,6]', 'Same Row or Col'),
+        ('[0,6]', '[1,6]', 'robot at south'),
+        ('[2,6]', '[1,6]', 'robot at north'),
+        ('[1,0]', '[1,6]', 'robot at west'),
+        ('[1,9]', '[1,6]', 'robot at east'),
+        ('[1,6]', '[1,6]', 'robot here'),
 
         ('[2,5]', '[1,6]', 'robot at northwest'),
         ('[2,7]', '[1,6]', 'robot at northeast'),
@@ -136,7 +136,7 @@ class TestTagTransition(unittest.TestCase):
     )
     @unpack
     def testRobotIsAt(self, robotNextState, oppoState, actualRobotIsAt):
-        testedTerm = self.tagTransition.robotIsAt(robotNextState, oppoState)
+        testedTerm = self.tagTransition.theRobotIsAt(robotNextState, oppoState)
         testingTerm = actualRobotIsAt
         self.assertEqual(testedTerm, testingTerm)
 
@@ -194,6 +194,20 @@ class TestTagTransition(unittest.TestCase):
         testingTerm = actualValidity
         self.assertEqual(testedTerm, testingTerm)
 
+    @data(
+        ('[2,6]', '[0,6]', '[0,7]', 1),
+        ('[2,6]', '[0,6]', '[0,5]', 1),
+        ('[2,6]', '[0,6]', '[1,5]', 0),
+        ('[2,6]', '[0,5]', '[0,4]', 1),
+        ('[2,6]', '[0,5]', '[1,5]', 0),
+        ('[2,6]', '[0,5]', '[0,6]', 0),
+    )
+    @unpack
+    def testJudgeOppoAvoidRobot(self, robotNextState, oppoState, oppoNextState, actualValidity):
+        testedTerm = self.tagTransition.judgeOppoAvoidRobot(robotNextState, oppoState, oppoNextState)
+        testingTerm = actualValidity
+        self.assertEqual(testedTerm, testingTerm)
+
 
 @ddt
 class TestTagReward(unittest.TestCase):
@@ -226,15 +240,16 @@ class TestTagReward(unittest.TestCase):
 @ddt
 class TestTagObservation(unittest.TestCase):
     def setUp(self):
-        pass
+        self.tagObservation = TagObservation()
 
     def tearDown(self):
         pass
 
     @data(
-        ('Tag', 'r[1,5]ntagged', 'ntagged', 1.0),
-        ('Tag', 'r[1,5]n[0,0]', 'n[0,0]', 1/28),
-        ('North', 'r[1,5]n[0,0]', 'n[0,0]', 1/29),
+        ('North', 'r[1,6]n[4,7]', 'r[1,6]', 1),
+        ('North', 'r[1,6]n[1,6]', 'sameblog', 1),
+        ('Tag', 'r[1,6]n[1,6]', 'sameblog', 1),
+        ('Tag', 'r[1,6]n[4,7]', 'r[1,6]', 1),
     )
     @unpack
     def testTagObservation(self, action, state, observation, actualObservationProb):
@@ -243,6 +258,31 @@ class TestTagObservation(unittest.TestCase):
         testingTerm = actualObservationProb
         self.assertEqual(testedTerm, testingTerm)
 
+    @data(
+        ('Tag', '[1,6]', 'tagged', 'sameblog', 1),
+        ('North', '[1,6]', '[1,6]', 'sameblog', 1),
+        ('North', '[1,6]', '[1,6]', 'r[1,6]', 0),
+        ('North', '[1,6]', '[1,5]', 'sameblog', 0),
+        ('North', '[1,6]', '[1,5]', 'r[1,6]', 1),
+    )
+    @unpack
+    def testJudgeActionObservationValid(self, action, robotState, oppoState, observation, actualValidity):
+        testedTerm = self.tagObservation.judgeActionObservationValid(action, robotState, oppoState, observation)
+        testingTerm = actualValidity
+        self.assertEqual(testedTerm, testingTerm)
+
+    @data(
+        ('[0,0]', 'North', 0),
+        ('[0,0]', 'East', 0),
+        ('[0,0]', 'South', 1),
+        ('[0,0]', 'West', 1),
+        ('[0,0]', 'Tag', 1),
+    )
+    @unpack
+    def testJudgeRobotActionStateValid(self, robotState, action, actualValidity):
+        testedTerm = self.tagObservation.judgeRobotActionStateValid(robotState, action)
+        testingTerm = actualValidity
+        self.assertEqual(testedTerm, testingTerm)
 
 
 if __name__ == '__main__':

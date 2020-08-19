@@ -21,7 +21,7 @@ class TagModel(object):
         # tag environment
         self.states = ['r'+i+'n'+j for i in self.robotStates for j in self.opponentStates]
         self.actions = ['North','South','East','West','Tag']
-        self.observations = ['n'+i for i in self.opponentStates]
+        self.observations = ['r'+i for i in self.robotStates]+['sameblog']
 
         # other settings
         self.initState = None
