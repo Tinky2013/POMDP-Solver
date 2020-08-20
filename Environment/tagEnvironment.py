@@ -237,6 +237,13 @@ class TagObservation():
         else:
             oppoState = state[state.index('n')+1:state.index('n')+6]
 
+        robotActionStateValid = self.judgeRobotActionStateValid(robotState, action)
+        actionOppoStateValid = self.judgeActionOppoStateValid(oppoState, action)
+        actionObservationValid = self.judgeActionObservationValid(action, robotState, oppoState, observation)
+        isInputValid = robotActionStateValid * actionOppoStateValid * actionObservationValid
+        if isInputValid == 0:
+            return 0.0
+
         return 1.0
 
     def judgeRobotActionStateValid(self, robotState, action):
@@ -245,11 +252,24 @@ class TagObservation():
         robotNewPosition = self.worldMap.get(robotState, None)
         return self.robotValidNewPosition[robotNewPosition].get(action, 0.0)
 
+    def judgeActionOppoStateValid(self, oppoState, action):
+        # for the opponent, given the robot action, some state can't reached
+        if oppoState == 'tagged':
+            if action != 'Tag':
+                return 0.0
+        return 1.0
+
     def judgeActionObservationValid(self, action, robotState, oppoState, observation):
         # given an action and the state it induced, the observation is fixed
         if action == 'Tag':
-            return 1.0 if (oppoState == 'tagged' and observation == 'sameblog') or (oppoState != 'tagged' and observation == ('r'+robotState)) else 0.0
+            return 1.0 if (
+                    (oppoState == 'tagged' and observation == 'sameblog')
+                    or (oppoState != 'tagged' and observation == ('r'+robotState) and observation != 'sameblog')
+            ) else 0.0
         else:
-            return 1.0 if (robotState == oppoState and observation == 'sameblog') or (robotState != oppoState and observation == ('r'+robotState)) else 0.0
+            return 1.0 if (
+                    (robotState == oppoState and observation == 'sameblog')
+                    or (robotState != oppoState and observation == ('r'+robotState))
+            ) else 0.0
 
 

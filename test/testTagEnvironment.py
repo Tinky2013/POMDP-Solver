@@ -248,8 +248,18 @@ class TestTagObservation(unittest.TestCase):
     @data(
         ('North', 'r[1,6]n[4,7]', 'r[1,6]', 1),
         ('North', 'r[1,6]n[1,6]', 'sameblog', 1),
-        ('Tag', 'r[1,6]n[1,6]', 'sameblog', 1),
-        ('Tag', 'r[1,6]n[4,7]', 'r[1,6]', 1),
+
+        ('North', 'r[1,6]ntagged', 'sameblog', 0),  # 'North' can not induce 'ntagged'
+        ('North', 'r[0,0]n[1,6]', 'r[0,0]', 0),     # 'North' can not help robot get '[0,0]'
+        ('North', 'r[1,0]n[1,6]', 'r[0,1]', 0),     # observation wrong
+        ('North', 'r[1,6]n[1,6]', 'r[1,6]', 0),     # observe 'sameblog' not robot's state
+
+        ('Tag', 'r[1,6]ntagged', 'sameblog', 1),    # gameover
+        ('Tag', 'r[1,6]n[4,7]', 'r[1,6]', 1),       # game not over
+
+        ('Tag', 'r[1,6]ntagged', 'r[1,6]', 0),      # successfully Tag, observe 'sameblog' not robot's state
+        ('Tag', 'r[1,6]n[1,6]', 'sameblog', 0),     # in the same blog, 'Tag' must induce ntagged
+        ('Tag', 'r[1,6]n[1,6]', 'r[1,6]', 1),
     )
     @unpack
     def testTagObservation(self, action, state, observation, actualObservationProb):
