@@ -17,7 +17,7 @@ class TestTagTransition(unittest.TestCase):
     @data(
         # oppo stay
         # same row/col
-        ('Tag', 'r[1,6]n[1,6]', 'r[1,6]ntagged', 1.0),  # oppo tagged
+        ('Tag', 'r[1,6]n[1,6]', 'r[1,6]n[tag]', 1.0),  # oppo tagged
         ('Tag', 'r[1,0]n[1,9]', 'r[1,0]n[1,9]', 0.2),   # oppo at corner
         ('Tag', 'r[2,6]n[4,6]', 'r[2,6]n[4,6]', 0.2),   # oppo at edge
         ('Tag', 'r[0,8]n[1,8]', 'r[0,8]n[1,8]', 0.2),   # oppo at edge
@@ -249,16 +249,16 @@ class TestTagObservation(unittest.TestCase):
         ('North', 'r[1,6]n[4,7]', 'r[1,6]', 1),
         ('North', 'r[1,6]n[1,6]', 'sameblog', 1),
 
-        ('North', 'r[1,6]ntagged', 'sameblog', 0),  # 'North' can not induce 'ntagged'
+        ('North', 'r[1,6]n[tag]', 'sameblog', 0),  # 'North' can not induce 'n[tag]'
         ('North', 'r[0,0]n[1,6]', 'r[0,0]', 0),     # 'North' can not help robot get '[0,0]'
         ('North', 'r[1,0]n[1,6]', 'r[0,1]', 0),     # observation wrong
         ('North', 'r[1,6]n[1,6]', 'r[1,6]', 0),     # observe 'sameblog' not robot's state
 
-        ('Tag', 'r[1,6]ntagged', 'sameblog', 1),    # gameover
+        ('Tag', 'r[1,6]n[tag]', 'sameblog', 1),    # gameover
         ('Tag', 'r[1,6]n[4,7]', 'r[1,6]', 1),       # game not over
 
-        ('Tag', 'r[1,6]ntagged', 'r[1,6]', 0),      # successfully Tag, observe 'sameblog' not robot's state
-        ('Tag', 'r[1,6]n[1,6]', 'sameblog', 0),     # in the same blog, 'Tag' must induce ntagged
+        ('Tag', 'r[1,6]n[tag]', 'r[1,6]', 0),      # successfully Tag, observe 'sameblog' not robot's state
+        ('Tag', 'r[1,6]n[1,6]', 'sameblog', 0),     # in the same blog, 'Tag' must induce n[tag]
         ('Tag', 'r[1,6]n[1,6]', 'r[1,6]', 1),
     )
     @unpack
@@ -269,7 +269,7 @@ class TestTagObservation(unittest.TestCase):
         self.assertEqual(testedTerm, testingTerm)
 
     @data(
-        ('Tag', '[1,6]', 'tagged', 'sameblog', 1),
+        ('Tag', '[1,6]', '[tag]', 'sameblog', 1),
         ('North', '[1,6]', '[1,6]', 'sameblog', 1),
         ('North', '[1,6]', '[1,6]', 'r[1,6]', 0),
         ('North', '[1,6]', '[1,5]', 'sameblog', 0),

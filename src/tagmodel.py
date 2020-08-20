@@ -17,7 +17,7 @@ class TagModel(object):
                             '[2,5]', '[2,6]', '[2,7]', '[3,5]', '[3,6]', '[3,7]', '[4,5]', '[4,6]', '[4,7]']
         self.opponentStates = ['[0,0]', '[0,1]', '[0,2]', '[0,3]', '[0,4]', '[0,5]', '[0,6]', '[0,7]', '[0,8]', '[0,9]',
                             '[1,0]', '[1,1]', '[1,2]', '[1,3]', '[1,4]', '[1,5]', '[1,6]', '[1,7]', '[1,8]', '[1,9]',
-                            '[2,5]', '[2,6]', '[2,7]', '[3,5]', '[3,6]', '[3,7]', '[4,5]', '[4,6]', '[4,7]', 'tagged']
+                            '[2,5]', '[2,6]', '[2,7]', '[3,5]', '[3,6]', '[3,7]', '[4,5]', '[4,6]', '[4,7]', '[tag]']
         # tag environment
         self.states = ['r'+i+'n'+j for i in self.robotStates for j in self.opponentStates]
         self.actions = ['North','South','East','West','Tag']
@@ -30,11 +30,8 @@ class TagModel(object):
     def __call__(self):
         pass
 
-
     def specifyEnvironmentArguments(self, param):
         self.discount = param['discount']
-        self.rewardParam = param['reward_param']
-        self.observationParam = param['observation_param']
 
     '''
     Here's some property of the tiger model

@@ -96,11 +96,9 @@ class TagTransition():
         robotState = state[state.index('r')+1:state.index('r')+6]
         oppoState = state[state.index('n')+1:state.index('n')+6]
         robotNextState = nextState[nextState.index('r')+1:nextState.index('r')+6]
-        if nextState[nextState.index('n')+1:]=='tagged':
-            oppoNextState = 'tagged'    # game over
-            return 1.0
-        else:
-            oppoNextState = nextState[nextState.index('n')+1:nextState.index('n')+6]
+        oppoNextState = nextState[nextState.index('n')+1:nextState.index('n')+6]
+        if oppoState == '[tag]':    # game over, can't exist
+            return 0.0
 
 
         # ensure the valid input
@@ -136,6 +134,8 @@ class TagTransition():
 
 
     def judgeOppoEscaping(self, oppoState, oppoNextState):
+        if oppoNextState == '[tag]':
+            return 1.0
         relativeVec = list(map(lambda v: v[1] - v[0], zip(eval(oppoState), eval(oppoNextState))))
         return False if (relativeVec == [0,0]) else True
 
@@ -174,14 +174,20 @@ class TagTransition():
 
     def judgeOppoPositionShiftValid(self, oppoState, oppoNextState):
         # for the opponent, it can only stay or move to the neighbor state
-        directionVec = list(map(lambda v: v[1] - v[0], zip(eval(oppoState), eval(oppoNextState))))
-        return self.oppoValidPositionShift.get(tuple(directionVec), 0.0)
+        if oppoNextState == '[tag]':
+            return 1.0
+        else:
+            directionVec = list(map(lambda v: v[1] - v[0], zip(eval(oppoState), eval(oppoNextState))))
+            return self.oppoValidPositionShift.get(tuple(directionVec), 0.0)
 
     def judgeOppoAvoidRobot(self, robotNextState, oppoState, oppoNextState):
         # the opponent can't move towards the robot (eliminate the white part)
         whereIsRobot = self.theRobotIsAt(robotNextState, oppoState)
-        oppoDirectionVec = list(map(lambda v: v[1] - v[0], zip(eval(oppoState), eval(oppoNextState))))
-        return self.oppoShouldAvoidRobot[whereIsRobot].get(tuple(oppoDirectionVec), 0.0)
+        if oppoNextState == '[tag]':
+            return 1.0 if whereIsRobot == 'robot here' else 0.0
+        else:
+            oppoDirectionVec = list(map(lambda v: v[1] - v[0], zip(eval(oppoState), eval(oppoNextState))))
+            return self.oppoShouldAvoidRobot[whereIsRobot].get(tuple(oppoDirectionVec), 0.0)
 
 
 class TagReward():
@@ -190,8 +196,8 @@ class TagReward():
 
     def __call__(self, action, state):
         robotState = state[state.index('r')+1:state.index('r')+6]
-        if state[state.index('n')+1:]=='tagged':
-            opponentState = 'tagged'
+        if state[state.index('n')+1:]=='[tag]':
+            opponentState = '[tag]'
         else:
             opponentState = state[state.index('n')+1:state.index('n')+6]
 
@@ -232,10 +238,7 @@ class TagObservation():
     def __call__(self, action, state, observation):
         # given the action and the physical state that action induced, the observation is fixed
         robotState = state[state.index('r') + 1:state.index('r') + 6]
-        if state[state.index('n')+1:]=='tagged':
-            oppoState = 'tagged'    # game over
-        else:
-            oppoState = state[state.index('n')+1:state.index('n')+6]
+        oppoState = state[state.index('n')+1:state.index('n')+6]
 
         robotActionStateValid = self.judgeRobotActionStateValid(robotState, action)
         actionOppoStateValid = self.judgeActionOppoStateValid(oppoState, action)
@@ -254,7 +257,7 @@ class TagObservation():
 
     def judgeActionOppoStateValid(self, oppoState, action):
         # for the opponent, given the robot action, some state can't reached
-        if oppoState == 'tagged':
+        if oppoState == '[tag]':
             if action != 'Tag':
                 return 0.0
         return 1.0
@@ -263,8 +266,8 @@ class TagObservation():
         # given an action and the state it induced, the observation is fixed
         if action == 'Tag':
             return 1.0 if (
-                    (oppoState == 'tagged' and observation == 'sameblog')
-                    or (oppoState != 'tagged' and observation == ('r'+robotState) and observation != 'sameblog')
+                    (oppoState == '[tag]' and observation == 'sameblog')
+                    or (oppoState != '[tag]' and observation == ('r'+robotState) and observation != 'sameblog')
             ) else 0.0
         else:
             return 1.0 if (
