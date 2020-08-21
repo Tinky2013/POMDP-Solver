@@ -105,7 +105,7 @@ class TagTransition():
         isRobotActionValid = self.judgeRobotActionValid(robotState, action)
         isRobotActionNextstateValid = self.judgeRobotActionNextstateValid(robotState, action, robotNextState)
         isOppoPositionShiftValid = self.judgeOppoPositionShiftValid(oppoState, oppoNextState)
-        isOppoAvoidRobot = self.judgeOppoAvoidRobot(robotNextState, oppoState, oppoNextState)
+        isOppoAvoidRobot = self.judgeOppoAvoidRobot(action, robotNextState, oppoState, oppoNextState)
         isValidInput = isRobotActionValid * isRobotActionNextstateValid * isOppoPositionShiftValid * isOppoAvoidRobot
         if isValidInput == 0:
             return 0.0
@@ -180,12 +180,14 @@ class TagTransition():
             directionVec = list(map(lambda v: v[1] - v[0], zip(eval(oppoState), eval(oppoNextState))))
             return self.oppoValidPositionShift.get(tuple(directionVec), 0.0)
 
-    def judgeOppoAvoidRobot(self, robotNextState, oppoState, oppoNextState):
+    def judgeOppoAvoidRobot(self, action, robotNextState, oppoState, oppoNextState):
         # the opponent can't move towards the robot (eliminate the white part)
         whereIsRobot = self.theRobotIsAt(robotNextState, oppoState)
-        if oppoNextState == '[tag]':
-            return 1.0 if whereIsRobot == 'robot here' else 0.0
+        if oppoNextState == '[tag]':    # unless is tagged
+            return 1.0 if (whereIsRobot == 'robot here' and action == 'Tag') else 0.0
         else:
+            if whereIsRobot == 'robot here' and action == 'Tag':
+                return 0.0
             oppoDirectionVec = list(map(lambda v: v[1] - v[0], zip(eval(oppoState), eval(oppoNextState))))
             return self.oppoShouldAvoidRobot[whereIsRobot].get(tuple(oppoDirectionVec), 0.0)
 

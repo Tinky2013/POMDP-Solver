@@ -9,6 +9,8 @@ all the algorithm will be included in the super class 'PomdpUtilityr'.
 import numpy as np
 from tools.alphaVector import AlphaVector
 from .pbviBeliefExpansion import BeliefExpension
+import warnings
+warnings.filterwarnings('ignore')
 from array import array
 import random
 
@@ -97,20 +99,18 @@ class PBVI():
 
     def getBestActionVec(self, belief, state):
         value = [np.dot(alphaVector.value, belief) for alphaVector in self.alphaVectors]
-        print("value:", value)
         validAlphaVectors = self.alphaVectors
         bestActionVecIdx = random.choice(np.argwhere(value == np.max(value)))[0]
 
         while validAlphaVectors[bestActionVecIdx].action not in self.modelEnv.getValidAction(state):
-            validAlphaVectors[bestActionVecIdx].value = -np.inf
+            validAlphaVectors[bestActionVecIdx].value = 'Invalid'
             bestActionVecIdx = random.choice(np.argwhere(value == np.max(value)))[0]
-
             val = [validAlphaVectors[i].value for i in range(len(validAlphaVectors))]
-            if max(val)== -np.inf:
+            # small numbers of belief points may cause this problem
+            if val.count('Invalid') == len(val):
                 print("No valid Action!")
+                assert(False)
 
-
-        print("valid action:", self.modelEnv.getValidAction(state))
         for alphaVector in self.alphaVectors:
             print("AlphaAction: ", alphaVector.action)
 

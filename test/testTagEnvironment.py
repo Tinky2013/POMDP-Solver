@@ -118,6 +118,8 @@ class TestTagTransition(unittest.TestCase):
         ('North', 'r[3,6]n[4,6]', 'r[4,6]n[4,5]', 0.8 / 3),
         ('North', 'r[3,6]n[4,6]', 'r[4,6]n[4,7]', 0.8 / 3),
         ('North', 'r[3,6]n[4,6]', 'r[4,6]n[4,6]', 0.2),
+        ('West', 'r[0,8]n[0,7]', 'r[0,7]n[tag]', 0),
+        ('Tag', 'r[0,8]n[0,7]', 'r[0,7]n[tag]', 0),
     )
     @unpack
     def testTagTransition(self, action, state, nextState, actualProb):
@@ -198,16 +200,16 @@ class TestTagTransition(unittest.TestCase):
         self.assertEqual(testedTerm, testingTerm)
 
     @data(
-        ('[2,6]', '[0,6]', '[0,7]', 1),
-        ('[2,6]', '[0,6]', '[0,5]', 1),
-        ('[2,6]', '[0,6]', '[1,5]', 0),
-        ('[2,6]', '[0,5]', '[0,4]', 1),
-        ('[2,6]', '[0,5]', '[1,5]', 0),
-        ('[2,6]', '[0,5]', '[0,6]', 0),
+        ('North', '[2,6]', '[0,6]', '[0,7]', 1),
+        ('North', '[2,6]', '[0,6]', '[0,5]', 1),
+        ('North', '[2,6]', '[0,6]', '[1,5]', 0),
+        ('North', '[2,6]', '[0,5]', '[0,4]', 1),
+        ('North', '[2,6]', '[0,5]', '[1,5]', 0),
+        ('North', '[2,6]', '[0,5]', '[0,6]', 0),
     )
     @unpack
-    def testJudgeOppoAvoidRobot(self, robotNextState, oppoState, oppoNextState, actualValidity):
-        testedTerm = self.tagTransition.judgeOppoAvoidRobot(robotNextState, oppoState, oppoNextState)
+    def testJudgeOppoAvoidRobot(self, action, robotNextState, oppoState, oppoNextState, actualValidity):
+        testedTerm = self.tagTransition.judgeOppoAvoidRobot(action, robotNextState, oppoState, oppoNextState)
         testingTerm = actualValidity
         self.assertEqual(testedTerm, testingTerm)
 

@@ -25,7 +25,7 @@ class TagModel(object):
 
         # other settings
         self.initState = None
-        self.currentState = self.initState or np.random.choice(self.states)
+        self.currentState = self.initState or np.random.choice(['r' + i + 'n' + j for i in self.robotStates for j in self.robotStates]) # do not start with 'tag'
         self.tagTransition = TagTransition()
 
     def __call__(self):

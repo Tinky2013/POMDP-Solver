@@ -14,7 +14,7 @@ def main():
         'horizon_T': 1,
         'expend_N': 1,
         'expend_method': 'SSRA',  # RA, SSRA, SSEA
-        'num_belief': 2,
+        'num_belief': 1,
     }
     envParams = {
         'env_name': 'Tag_env',
@@ -46,7 +46,10 @@ def main():
         print("The env feedback. nextState: ", nextState, " observation: ", observation)
         belief = modelEnv.updateBelief(state, nextState, belief, action, observation)  # update the belief
         totalRewards += reward
+        if 'tag' in nextState:
+            break
         modelEnv.currentState = nextState
+
         # for every trial, print the result
         if execParams['print_process']:
             print(
