@@ -52,6 +52,7 @@ def main():
             print(
                 "Play Times: {} || Action Chosen: {} || Observation: {} || Reward: {} || New State: {} || New Belief: {}".format(
                     i, action, observation, reward, nextState, belief))
+        print("---------")
     # end playing
     endtime = datetime.datetime.now()
 

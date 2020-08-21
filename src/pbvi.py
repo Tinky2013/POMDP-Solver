@@ -84,6 +84,7 @@ class PBVI():
                 for o in self.modelEnv.observations
             } for a in self.modelEnv.actions
         }
+
         # step 2: cross-sum operation
         # For every belief-action pair we need to compute a vector
         gammaAB = {
@@ -99,10 +100,13 @@ class PBVI():
         print("value:", value)
         validAlphaVectors = self.alphaVectors
         bestActionVecIdx = random.choice(np.argwhere(value == np.max(value)))[0]
+
         while validAlphaVectors[bestActionVecIdx].action not in self.modelEnv.getValidAction(state):
             validAlphaVectors[bestActionVecIdx].value = -np.inf
             bestActionVecIdx = random.choice(np.argwhere(value == np.max(value)))[0]
-            if len(validAlphaVectors)==0:
+
+            val = [validAlphaVectors[i].value for i in range(len(validAlphaVectors))]
+            if max(val)== -np.inf:
                 print("No valid Action!")
 
 

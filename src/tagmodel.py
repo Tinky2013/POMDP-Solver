@@ -101,11 +101,12 @@ class TagModel(object):
         robotState = state[state.index('r') + 1:state.index('r') + 6]
         robotNextState = nextState[nextState.index('r') + 1:nextState.index('r') + 6]
 
+        # exchange the belief fragment
         Idx = len(self.opponentStates) * self.opponentStates.index(robotState)
         nextIdx = len(self.opponentStates) * self.opponentStates.index(robotNextState)
 
         beliefpiece = belief[Idx:Idx + len(self.opponentStates)]
-        cbelief = [0] * 870
+        cbelief = [0] * len(self.states)
         cbelief[nextIdx:nextIdx + len(self.opponentStates)] = beliefpiece
 
         newBelief = [
