@@ -1,10 +1,5 @@
 from src.tigermodel import TigerModel
 from src.pbvi import PBVI
-from src.pomdputility import EnvFeedback, UpdateBelief
-
-from tools.sampleUtility import generateInitBeliefPoints, generateUniformBeliefs
-
-from visualization.visualizeTiger import VisualizedTiger
 import datetime
 
 
@@ -43,19 +38,21 @@ def main():
             modelEnv.specifyEnvironmentArguments(envParams)
             solver = PBVI(modelEnv)
 
-            beliefPoints = generateInitBeliefPoints(modelEnv.states, algoParams['num_belief'])
+            beliefPoints = modelEnv.generateInitBeliefPoints(algoParams['num_belief'])
             solver.specifyAlgorithmArguments(beliefPoints,algoParams)
 
             # start playing
             totalRewards = 0
-            belief = generateUniformBeliefs(modelEnv.states)    # for model evaluation
+            belief = modelEnv.generateUniformBeliefs()    # for model evaluation
             if execParams['print_process']:
                 print('''Initial State: {} || Initial Belief: {} || Time Horizon: {} || Max Play: {}
                     '''.format(modelEnv.currentState,belief,algoParams['horizon_T'],execParams['max_play']))
 
+
             starttime = datetime.datetime.now()
             # only planning process
-            action = solver.getPlanningAction(belief)
+            state = modelEnv.currentState
+            action = solver.getPlanningAction(state, belief)
             # record the playing time
             endtime = datetime.datetime.now()
             timeFloat = round((endtime - starttime).seconds+0.000001*(endtime - starttime).microseconds,2)

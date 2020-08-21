@@ -2,7 +2,7 @@ import unittest
 from ddt import ddt, data, unpack
 
 from src.tigermodel import TigerModel
-from src.pomdputility import EnvFeedback, UpdateBelief
+
 import sys
 sys.path.append("..")
 
@@ -22,8 +22,6 @@ envParams = {
 
 modelEnv = TigerModel()
 modelEnv.specifyEnvironmentArguments(envParams)
-envFeedback = EnvFeedback(modelEnv)
-updateBelief = UpdateBelief(modelEnv)
 
 @ddt
 class TestTigerUpdateBelief(unittest.TestCase):
@@ -48,7 +46,7 @@ class TestTigerUpdateBelief(unittest.TestCase):
     )
     @unpack
     def testUpdateBelief(self, belief, action, observation, actualNormalizedBelief):
-        testedTerm = updateBelief(belief, action, observation)
+        testedTerm = modelEnv.updateBelief(belief, action, observation)
         testingTerm = actualNormalizedBelief
         self.assertEqual(testedTerm, testingTerm)
 
@@ -61,19 +59,16 @@ class TestTigerEnvFeedback(unittest.TestCase):
         pass
 
     @data(
-        ('listen',-1, None),
-        ('open-left',10,-100),
-        ('open-right',10,-100),
+        ('tiger-left', 'listen',-1),
+        ('tiger-left', 'open-left',-100),
+        ('tiger-left', 'open-right',10),
     )
     @unpack
-    def testActionRewardFeedback(self, action, reward1, reward2):
+    def testActionRewardFeedback(self, state, action, reward):
         modelEnv.specifyEnvironmentArguments(envParams)
-        s, o, r = envFeedback(action)
+        s, o, r = modelEnv.envFeedback(state, action)
         testedTerm = r
-        if reward1 == r:
-            testingTerm = reward1
-        else:
-            testingTerm = reward2
+        testingTerm = reward
         self.assertEqual(testedTerm, testingTerm)
 
 

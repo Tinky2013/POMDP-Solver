@@ -8,7 +8,6 @@ all the algorithm will be included in the super class 'PomdpUtilityr'.
 
 import numpy as np
 from tools.alphaVector import AlphaVector
-from src.pomdputility import PomdpSolver
 from .pbviBeliefExpansion import BeliefExpension
 from array import array
 import random
@@ -20,16 +19,11 @@ random.seed()
 
 class PBVI():
     def __init__(self, modelEnv):
-        #PomdpSolver.__init__(self, modelEnv)
         self.modelEnv = modelEnv
         self.beliefPoints = None
         self.alphaVectors = [AlphaVector(action=-1, value=np.zeros(self.modelEnv.stateDim))]
         self.gammaAStar = self.computeGammaAStar()
         self.solved = False
-
-        # What?
-        self.tagTransition = TagTransition()
-
 
     def specifyAlgorithmArguments(self, beliefPoints, algoParam):
         self.beliefPoints = beliefPoints
@@ -81,77 +75,15 @@ class PBVI():
         return AlphaVector(action=bestAction, value=bestActionVal)
 
 
-    def backUp(self,state):
+    def backUp(self):
         # step 1: create projection
         # For every action-observation pair we need to compute a vector
-
-
         gammaAO = {
-            'North': {
-                'r[0,0]': [0.0] * 870, 'r[0,1]': [0.0] * 870, 'r[0,2]': [0.0] * 870, 'r[0,3]': [0.0] * 870,
-                'r[0,4]': [0.0] * 870, 'r[0,5]': [0.0] * 870, 'r[0,6]': [0.0] * 870, 'r[0,7]': [0.0] * 870,
-                'r[0,8]': [0.0] * 870, 'r[0,9]': [0.0] * 870, 'r[1,0]': [0.0] * 870, 'r[1,1]': [0.0] * 870,
-                'r[1,2]': [0.0] * 870, 'r[1,3]': [0.0] * 870, 'r[1,4]': [0.0] * 870, 'r[1,5]': [0.0] * 870,
-                'r[1,6]': [0.0] * 870, 'r[1,7]': [0.0] * 870,
-                'r[1,8]': [0.0] * 870, 'r[1,9]': [0.0] * 870, 'r[2,5]': [0.0] * 870, 'r[2,6]': [0.0] * 870,
-                'r[2,7]': [0.0] * 870, 'r[3,5]': [0.0] * 870, 'r[3,6]': [0.0] * 870, 'r[3,7]': [0.0] * 870,
-                'r[4,5]': [0.0] * 870, 'r[4,6]': [0.0] * 870, 'r[4,7]': [0.0] * 870, 'sameblog': [0.0] * 870,
-            },
-            'South': {
-                'r[0,0]': [0.0] * 870, 'r[0,1]': [0.0] * 870, 'r[0,2]': [0.0] * 870, 'r[0,3]': [0.0] * 870,
-                'r[0,4]': [0.0] * 870, 'r[0,5]': [0.0] * 870, 'r[0,6]': [0.0] * 870, 'r[0,7]': [0.0] * 870,
-                'r[0,8]': [0.0] * 870, 'r[0,9]': [0.0] * 870, 'r[1,0]': [0.0] * 870, 'r[1,1]': [0.0] * 870,
-                'r[1,2]': [0.0] * 870, 'r[1,3]': [0.0] * 870, 'r[1,4]': [0.0] * 870, 'r[1,5]': [0.0] * 870,
-                'r[1,6]': [0.0] * 870, 'r[1,7]': [0.0] * 870,
-                'r[1,8]': [0.0] * 870, 'r[1,9]': [0.0] * 870, 'r[2,5]': [0.0] * 870, 'r[2,6]': [0.0] * 870,
-                'r[2,7]': [0.0] * 870, 'r[3,5]': [0.0] * 870, 'r[3,6]': [0.0] * 870, 'r[3,7]': [0.0] * 870,
-                'r[4,5]': [0.0] * 870, 'r[4,6]': [0.0] * 870, 'r[4,7]': [0.0] * 870, 'sameblog': [0.0] * 870,
-            },
-            'East': {
-                'r[0,0]': [0.0] * 870, 'r[0,1]': [0.0] * 870, 'r[0,2]': [0.0] * 870, 'r[0,3]': [0.0] * 870,
-                'r[0,4]': [0.0] * 870, 'r[0,5]': [0.0] * 870, 'r[0,6]': [0.0] * 870, 'r[0,7]': [0.0] * 870,
-                'r[0,8]': [0.0] * 870, 'r[0,9]': [0.0] * 870, 'r[1,0]': [0.0] * 870, 'r[1,1]': [0.0] * 870,
-                'r[1,2]': [0.0] * 870, 'r[1,3]': [0.0] * 870, 'r[1,4]': [0.0] * 870, 'r[1,5]': [0.0] * 870,
-                'r[1,6]': [0.0] * 870, 'r[1,7]': [0.0] * 870,
-                'r[1,8]': [0.0] * 870, 'r[1,9]': [0.0] * 870, 'r[2,5]': [0.0] * 870, 'r[2,6]': [0.0] * 870,
-                'r[2,7]': [0.0] * 870, 'r[3,5]': [0.0] * 870, 'r[3,6]': [0.0] * 870, 'r[3,7]': [0.0] * 870,
-                'r[4,5]': [0.0] * 870, 'r[4,6]': [0.0] * 870, 'r[4,7]': [0.0] * 870, 'sameblog': [0.0] * 870,
-            },
-            'West': {
-                'r[0,0]': [0.0] * 870, 'r[0,1]': [0.0] * 870, 'r[0,2]': [0.0] * 870, 'r[0,3]': [0.0] * 870,
-                'r[0,4]': [0.0] * 870, 'r[0,5]': [0.0] * 870, 'r[0,6]': [0.0] * 870, 'r[0,7]': [0.0] * 870,
-                'r[0,8]': [0.0] * 870, 'r[0,9]': [0.0] * 870, 'r[1,0]': [0.0] * 870, 'r[1,1]': [0.0] * 870,
-                'r[1,2]': [0.0] * 870, 'r[1,3]': [0.0] * 870, 'r[1,4]': [0.0] * 870, 'r[1,5]': [0.0] * 870,
-                'r[1,6]': [0.0] * 870, 'r[1,7]': [0.0] * 870,
-                'r[1,8]': [0.0] * 870, 'r[1,9]': [0.0] * 870, 'r[2,5]': [0.0] * 870, 'r[2,6]': [0.0] * 870,
-                'r[2,7]': [0.0] * 870, 'r[3,5]': [0.0] * 870, 'r[3,6]': [0.0] * 870, 'r[3,7]': [0.0] * 870,
-                'r[4,5]': [0.0] * 870, 'r[4,6]': [0.0] * 870, 'r[4,7]': [0.0] * 870, 'sameblog': [0.0] * 870,
-            },
-            'Tag': {
-                'r[0,0]': [0.0] * 870, 'r[0,1]': [0.0] * 870, 'r[0,2]': [0.0] * 870, 'r[0,3]': [0.0] * 870,
-                'r[0,4]': [0.0] * 870, 'r[0,5]': [0.0] * 870, 'r[0,6]': [0.0] * 870, 'r[0,7]': [0.0] * 870,
-                'r[0,8]': [0.0] * 870, 'r[0,9]': [0.0] * 870, 'r[1,0]': [0.0] * 870, 'r[1,1]': [0.0] * 870,
-                'r[1,2]': [0.0] * 870, 'r[1,3]': [0.0] * 870, 'r[1,4]': [0.0] * 870, 'r[1,5]': [0.0] * 870,
-                'r[1,6]': [0.0] * 870, 'r[1,7]': [0.0] * 870,
-                'r[1,8]': [0.0] * 870, 'r[1,9]': [0.0] * 870, 'r[2,5]': [0.0] * 870, 'r[2,6]': [0.0] * 870,
-                'r[2,7]': [0.0] * 870, 'r[3,5]': [0.0] * 870, 'r[3,6]': [0.0] * 870, 'r[3,7]': [0.0] * 870,
-                'r[4,5]': [0.0] * 870, 'r[4,6]': [0.0] * 870, 'r[4,7]': [0.0] * 870, 'sameblog': [0.0] * 870,
-            },
+            a: {
+                o: [self.computeGammaAOIntermediate(alpha, a, o) for alpha in self.alphaVectors]
+                for o in self.modelEnv.observations
+            } for a in self.modelEnv.actions
         }
-
-
-
-
-
-
-
-        #gammaAO = {
-        #    a: {
-        #        o: [self.computeGammaAOIntermediate(alpha, a, o) for alpha in self.alphaVectors]
-        #        for o in self.modelEnv.observations
-        #    } for a in self.modelEnv.actions
-        #}
-
         # step 2: cross-sum operation
         # For every belief-action pair we need to compute a vector
         gammaAB = {
@@ -185,7 +117,7 @@ class PBVI():
         if self.solved == False:
             for expend in range(self.expendN):
                 for iter in range(self.horizonT):
-                    self.backUp(state)       # every step the alpha-vector will be updated
+                    self.backUp()       # every step the alpha-vector will be updated
                 #self.beliefPoints = self.beliefExpendMethod(self.beliefPoints)
 
             self.solved = True

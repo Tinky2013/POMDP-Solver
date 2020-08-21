@@ -5,8 +5,6 @@ from src.pbvi import PBVI
 from src.tigermodel import TigerModel
 import sys
 from tools.alphaVector import AlphaVector
-from array import array
-from tools.sampleUtility import generateInitBeliefPoints
 
 sys.path.append("..")
 
@@ -34,7 +32,7 @@ algoParams = {
     'num_belief': 100,
 }
 pbvi = PBVI(modelEnv)
-beliefPoints = generateInitBeliefPoints(modelEnv.states, algoParams['num_belief'])
+beliefPoints = modelEnv.generateInitBeliefPoints(algoParams['num_belief'])
 pbvi.specifyAlgorithmArguments(beliefPoints, algoParams)
 
 @ddt
@@ -47,18 +45,18 @@ class TestGetBestPlanningAction(unittest.TestCase):
         pass
 
     @data(
-        ([0.5,0.5],'listen'),
-        ([0.6,0.4],'listen'),
-        ([0.4,0.6],'listen'),
-        ([0.99,0.01],'open-right'),
-        ([0.01,0.99],'open-left'),
-        ([1.,0.],'open-right'),
-        ([0.,1.],'open-left'),
+        ('tiger-left', [0.5,0.5],'listen'),
+        ('tiger-left', [0.6,0.4],'listen'),
+        ('tiger-left', [0.4,0.6],'listen'),
+        ('tiger-left', [0.99,0.01],'open-right'),
+        ('tiger-left', [0.01,0.99],'open-left'),
+        ('tiger-left', [1.,0.],'open-right'),
+        ('tiger-left', [0.,1.],'open-left'),
     )
     @unpack
-    def testGetBestPlanningAction(self, belief, actualBestAction):
+    def testGetBestPlanningAction(self, state, belief, actualBestAction):
 
-        testedTerm = pbvi.getPlanningAction(belief)
+        testedTerm = pbvi.getPlanningAction(state, belief)
         testingTerm = actualBestAction
         self.assertEqual(testedTerm, testingTerm)
 
@@ -130,3 +128,5 @@ class TestFindBestAlphaVector(unittest.TestCase):
         testingTerm = av.action
         self.assertEqual(testedTerm, testingTerm)
 
+if __name__ == '__main__':
+    unittest.main()

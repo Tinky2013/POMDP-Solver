@@ -1,8 +1,6 @@
 from src.tigermodel import TigerModel
 from src.pbvi import PBVI
-from src.pomdputility import EnvFeedback, UpdateBelief
 
-from tools.sampleUtility import generateInitBeliefPoints, generateUniformBeliefs
 from src.pbviBeliefExpansion import BeliefExpension
 
 from visualization.visualizeTiger import VisualizedTiger
@@ -48,10 +46,9 @@ def main():
         for trial in range(Trial):
             modelEnv = TigerModel()
             modelEnv.specifyEnvironmentArguments(envParams)
-            envFeedback = EnvFeedback(modelEnv)
-            updateBelief = UpdateBelief(modelEnv)
+
             # initial belief points for PBVI
-            beliefPoints = generateInitBeliefPoints(modelEnv.states, algoParams['num_belief'])
+            beliefPoints = modelEnv.generateInitBeliefPoints(algoParams['num_belief'])
 
             if algoParams['expend_method'] == 'RA':
                 beliefExpendMethod = BeliefExpension(modelEnv).randomBeliefSelection
@@ -67,15 +64,17 @@ def main():
                 solver = PBVI(modelEnv)
                 solver.specifyAlgorithmArguments(beliefPoints, algoParams)
                 totalRewards = 0
-                belief = generateUniformBeliefs(modelEnv.states)
+                belief = modelEnv.generateUniformBeliefs()
 
                 # model evaluation
                 for i in range(execParams['max_play']):
                     # this is a general framework of solving POMDP problems
-                    action = solver.getPlanningAction(belief)       # get best action
-                    nextState, observation, reward = envFeedback(action)  # receive environment feedback
-                    belief = updateBelief(belief, action, observation)    # update the belief
+                    state = modelEnv.currentState
+                    action = solver.getPlanningAction(state, belief)  # get best action
+                    nextState, observation, reward = modelEnv.envFeedback(state, action)  # receive environment feedback
+                    belief = modelEnv.updateBelief(belief, action, observation)  # update the belief
                     totalRewards += reward
+                    modelEnv.currentState = nextState
                     # for every trial, print the result
                     if execParams['print_process']:
                         print("Play Times: {} || Action Chosen: {} || Observation: {} || Reward: {} || New State: {} || New Belief: {}".format(i,action,observation,reward,nextState,belief))
