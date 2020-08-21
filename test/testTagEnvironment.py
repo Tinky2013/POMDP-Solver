@@ -115,6 +115,9 @@ class TestTagTransition(unittest.TestCase):
         # other toy example
         ('East', 'r[1,4]n[3,6]', 'r[1,5]n[4,6]', 0.4),
         ('North', 'r[2,6]n[0,7]', 'r[3,6]n[0,8]', 0.8),
+        ('North', 'r[3,6]n[4,6]', 'r[4,6]n[4,5]', 0.8 / 3),
+        ('North', 'r[3,6]n[4,6]', 'r[4,6]n[4,7]', 0.8 / 3),
+        ('North', 'r[3,6]n[4,6]', 'r[4,6]n[4,6]', 0.2),
     )
     @unpack
     def testTagTransition(self, action, state, nextState, actualProb):

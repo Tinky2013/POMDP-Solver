@@ -7,22 +7,9 @@ np.random.seed()
 random.seed()
 
 def chooseItemIdx(probs):
-    assert(abs(sum(probs) - 1.0) <= 0.0000000)
+    assert(abs(sum(probs) - 1.0) <= 0.00000000000000)
     probs = np.array(probs)
     return np.random.choice(list(range(len(probs))), p=probs/probs.sum())
-
-def generateInitBeliefPoints(states, numBelief):
-    '''
-    Here we used uniform random over the belief simplex
-    '''
-    #beliefPoints = [[random.uniform() for s in states] for i in arange(0, 1+stepsize, stepsize)]
-    beliefPoints = [[random.uniform() for s in states] for i in range(numBelief)]
-    return array(beliefPoints)
-
-def generateUniformBeliefs(states):
-    stateNUM = len(states)
-    Beliefs = [1/stateNUM for i in range(stateNUM)]
-    return Beliefs
 
 def distanceL1(u,v):
     assert(len(u)==len(v))

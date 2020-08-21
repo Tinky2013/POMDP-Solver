@@ -1,7 +1,5 @@
 from src.tigermodel import TigerModel
 from src.pbvi import PBVI
-from src.pomdputility import EnvFeedback, UpdateBelief
-from tools.sampleUtility import generateInitBeliefPoints, generateUniformBeliefs
 from visualization.visualizeTiger import VisualizedTiger
 import datetime
 
@@ -14,7 +12,7 @@ def main():
     algoParams = {
         'algo':'pbvi',
         'horizon_T': 10,
-        'expend_N': 5,
+        'expend_N': 1,
         'expend_method': 'SSRA',    # RA, SSRA, SSEA
         'num_belief': 100,
     }
@@ -35,12 +33,10 @@ def main():
     # initialize environment
     modelEnv = TigerModel()
     modelEnv.specifyEnvironmentArguments(envParams)
-    envFeedback = EnvFeedback(modelEnv)
-    updateBelief = UpdateBelief(modelEnv)
     
     # initialize solver
     solver = PBVI(modelEnv)
-    beliefPoints = generateInitBeliefPoints(modelEnv.states, algoParams['num_belief'])
+    beliefPoints = modelEnv.generateInitBeliefPoints(algoParams['num_belief'])
     solver.specifyAlgorithmArguments(beliefPoints,algoParams)
     
     # initialize visualization tools
@@ -48,7 +44,7 @@ def main():
     #visualizer.visualizeBeliefPoint(beliefPoints)
 
     totalRewards = 0
-    belief = generateUniformBeliefs(modelEnv.states)    # for model evaluation
+    belief = modelEnv.generateUniformBeliefs()    # for model evaluation
     if execParams['print_process']:
         print('''Initial State: {} || Initial Belief: {} || Time Horizon: {} || Max Play: {}
             '''.format(modelEnv.currentState,belief,algoParams['horizon_T'],execParams['max_play']))
@@ -57,10 +53,12 @@ def main():
     starttime = datetime.datetime.now()
     for i in range(execParams['max_play']):
         # this is a general framework of solving POMDP problems
-        action = solver.getPlanningAction(belief)       # get best action
-        nextState, observation, reward = envFeedback(action)  # receive environment feedback
-        belief = updateBelief(belief, action, observation)    # update the belief
+        state = modelEnv.currentState
+        action = solver.getPlanningAction(state, belief)       # get best action
+        nextState, observation, reward = modelEnv.envFeedback(state, action)  # receive environment feedback
+        belief = modelEnv.updateBelief(belief, action, observation)    # update the belief
         totalRewards += reward
+        modelEnv.currentState = nextState
         # for every trial, print the result
         if execParams['print_process']:
             print("Play Times: {} || Action Chosen: {} || Observation: {} || Reward: {} || New State: {} || New Belief: {}".format(i,action,observation,reward,nextState,belief))

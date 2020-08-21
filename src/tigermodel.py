@@ -6,7 +6,7 @@ this file will initialize the model setting.
 '''
 
 from numpy import random
-
+from tools.sampleUtility import chooseItemIdx
 from Environment.tigerEnvironment import TigerTransition, TigerReward, TigerObservation
 import numpy as np
 
@@ -56,6 +56,45 @@ class TigerModel(object):
     def observationFunction(self, action, state, observation):
         observations = TigerObservation(self.observationParam)
         return observations(action, state, observation)
+
+    def generateInitBeliefPoints(self, numBelief):
+        '''
+        Here we used uniform random over the belief simplex
+        '''
+        beliefPoints = [[random.uniform() for s in self.states] for i in range(numBelief)]
+        return beliefPoints
+
+    def generateUniformBeliefs(self):
+        stateNUM = len(self.states)
+        Beliefs = [1 / stateNUM for i in range(stateNUM)]
+        return Beliefs
+
+    def getValidAction(self, state):
+        return self.actions
+
+    def updateBelief(self, belief, action, observation):
+        newBelief = [
+            self.observationFunction(action, sj, observation)*sum(
+                [self.transitionFunction(action, si, sj) * float(belief[i]) for i, si in enumerate(self.states)]
+            ) for sj in self.states
+        ]
+
+        # get the normalized belief
+        normalizedFactor = sum(newBelief)
+        assert (normalizedFactor != 0)
+        normalizedBelief = [x / normalizedFactor for x in newBelief]
+        return normalizedBelief  # return array with length=stateDim
+
+    def envFeedback(self,state, action):
+        nextStateProbs = [self.transitionFunction(action, state, sj) for sj in self.states]
+        nextState = self.states[chooseItemIdx(nextStateProbs)]
+
+        observationProbs = [self.observationFunction(action, nextState, oj) for oj in self.observations]
+        observation = self.observations[chooseItemIdx(observationProbs)]
+        reward = self.rewardFunction(action, state)
+
+        return nextState, observation, reward
+
 
 
 
