@@ -1,6 +1,6 @@
 import unittest
 from ddt import ddt, data, unpack
-
+from src.pomdpSimulation import POMDP
 from src.tigermodel import TigerModel
 
 import sys
@@ -22,6 +22,7 @@ envParams = {
 
 modelEnv = TigerModel()
 modelEnv.specifyEnvironmentArguments(envParams)
+pomdp = POMDP(modelEnv)
 
 @ddt
 class TestTigerUpdateBelief(unittest.TestCase):
@@ -46,7 +47,7 @@ class TestTigerUpdateBelief(unittest.TestCase):
     )
     @unpack
     def testUpdateBelief(self, belief, action, observation, actualNormalizedBelief):
-        testedTerm = modelEnv.updateBelief(belief, action, observation)
+        testedTerm = pomdp.updateBelief(belief, action, observation)
         testingTerm = actualNormalizedBelief
         self.assertEqual(testedTerm, testingTerm)
 
@@ -66,7 +67,7 @@ class TestTigerEnvFeedback(unittest.TestCase):
     @unpack
     def testActionRewardFeedback(self, state, action, reward):
         modelEnv.specifyEnvironmentArguments(envParams)
-        s, o, r = modelEnv.envFeedback(state, action)
+        s, o, r = pomdp.envFeedback(state, action)
         testedTerm = r
         testingTerm = reward
         self.assertEqual(testedTerm, testingTerm)

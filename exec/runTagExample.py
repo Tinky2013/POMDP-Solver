@@ -1,6 +1,6 @@
 from src.tagmodel import TagModel
 from src.pbvi import PBVI
-import datetime
+from src.pomdpSimulation import  POMDP
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
         'horizon_T': 1,
         'expend_N': 1,
         'expend_method': 'SSRA',  # RA, SSRA, SSEA
-        'num_belief': 1,
+        'num_belief': 5,
     }
     envParams = {
         'env_name': 'Tag_env',
@@ -24,6 +24,7 @@ def main():
     # initialize environment
     modelEnv = TagModel()
     modelEnv.specifyEnvironmentArguments(envParams)
+    pomdp = POMDP(modelEnv)
 
     # initialize solver
     solver = PBVI(modelEnv)
@@ -37,14 +38,12 @@ def main():
             '''.format(modelEnv.currentState, algoParams['horizon_T'], execParams['max_play'], belief))
 
     # start playing
-    starttime = datetime.datetime.now()
     for i in range(execParams['max_play']):
         # this is a general framework of solving POMDP problems
         state = modelEnv.currentState
-        action = solver.getPlanningAction(state, belief)  # get best action
-        nextState, observation, reward = modelEnv.envFeedback(state, action)  # receive environment feedback
-        print("The env feedback. nextState: ", nextState, " observation: ", observation)
-        belief = modelEnv.updateBelief(state, nextState, belief, action, observation)  # update the belief
+        action = solver.getPlanningAction(belief)  # get best action
+        nextState, observation, reward = pomdp.envFeedback(state, action)  # receive environment feedback
+        belief = pomdp.updateBelief(belief, action, observation)  # update the belief
         totalRewards += reward
         if 'tag' in nextState:
             break
@@ -55,13 +54,11 @@ def main():
             print(
                 "Play Times: {} || Action Chosen: {} || Observation: {} || Reward: {} || New State: {} || New Belief: {}".format(
                     i, action, observation, reward, nextState, belief))
-        print("---------")
+            print("---------")
     # end playing
-    endtime = datetime.datetime.now()
+
 
     print("Total reward:{}".format(totalRewards))
-    print("Playing time:  {} sec".format(
-        round((endtime - starttime).seconds + 0.000001 * (endtime - starttime).microseconds, 2)))
 
 
 if __name__ == '__main__':

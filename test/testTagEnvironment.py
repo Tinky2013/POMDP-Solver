@@ -120,6 +120,9 @@ class TestTagTransition(unittest.TestCase):
         ('North', 'r[3,6]n[4,6]', 'r[4,6]n[4,6]', 0.2),
         ('West', 'r[0,8]n[0,7]', 'r[0,7]n[tag]', 0),
         ('Tag', 'r[0,8]n[0,7]', 'r[0,7]n[tag]', 0),
+        ('North', 'r[1,4]n[3,6]', 'r[1,4]n[4,6]', 0.4),
+        ('North', 'r[1,0]n[3,6]', 'r[1,0]n[4,6]', 0.4),
+        ('North', 'r[1,0]n[3,6]', 'r[1,0]n[3,6]', 0.2),
     )
     @unpack
     def testTagTransition(self, action, state, nextState, actualProb):
@@ -175,6 +178,9 @@ class TestTagTransition(unittest.TestCase):
 
     @data(
         ('[1,4]', 'North', '[1,5]', 0),
+        ('[1,4]', 'North', '[1,4]', 1),
+        ('[1,4]', 'North', '[1,3]', 0),
+        ('[1,4]', 'North', '[0,4]', 0),
         ('[1,4]', 'East', '[1,5]', 1),
         ('[1,4]', 'East', '[1,6]', 0),
         ('[1,4]', 'Tag', '[1,4]', 1),
@@ -302,3 +308,4 @@ class TestTagObservation(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

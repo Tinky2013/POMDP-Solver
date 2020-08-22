@@ -13,8 +13,7 @@ import warnings
 warnings.filterwarnings('ignore')
 from array import array
 import random
-
-from Environment.tagEnvironment import TagTransition    # What?
+import datetime
 
 np.random.seed()
 random.seed()
@@ -86,7 +85,7 @@ class PBVI():
                 for o in self.modelEnv.observations
             } for a in self.modelEnv.actions
         }
-
+        print("Finish step 1")
         # step 2: cross-sum operation
         # For every belief-action pair we need to compute a vector
         gammaAB = {
@@ -94,43 +93,32 @@ class PBVI():
                 bIdx: self.computeGammaABIntermediate(a, b, gammaAO) for bIdx, b in enumerate(self.beliefPoints)
             } for a in self.modelEnv.actions
         }
+        print("Finish step 2")
         # step 3: update alpha-vectors (find best action for each belief point)
         self.alphaVectors = [self.findBestAlphaVector(gammaAB, bIdx, b) for bIdx, b in enumerate(self.beliefPoints)]
 
-    def getBestActionVec(self, belief, state):
+    def getBestActionVec(self, belief):
         value = [np.dot(alphaVector.value, belief) for alphaVector in self.alphaVectors]
-        validAlphaVectors = self.alphaVectors
         bestActionVecIdx = random.choice(np.argwhere(value == np.max(value)))[0]
-
-        while validAlphaVectors[bestActionVecIdx].action not in self.modelEnv.getValidAction(state):
-            validAlphaVectors[bestActionVecIdx].value = 'Invalid'
-            bestActionVecIdx = random.choice(np.argwhere(value == np.max(value)))[0]
-            val = [validAlphaVectors[i].value for i in range(len(validAlphaVectors))]
-            # small numbers of belief points may cause this problem
-            if val.count('Invalid') == len(val):
-                print("No valid Action!")
-                assert(False)
-
-        for alphaVector in self.alphaVectors:
-            print("AlphaAction: ", alphaVector.action)
-
         return self.alphaVectors[bestActionVecIdx]
 
-    def getPlanningAction(self, state, belief):
+    def getPlanningAction(self, belief):
         # Planning Process
         if self.solved == False:
+            starttime = datetime.datetime.now()
             for expend in range(self.expendN):
                 for iter in range(self.horizonT):
                     self.backUp()       # every step the alpha-vector will be updated
+                    print("Finish Horizon ", self.horizonT)
                 #self.beliefPoints = self.beliefExpendMethod(self.beliefPoints)
 
             self.solved = True
+            endtime = datetime.datetime.now()
+            print("Planning time:  {} sec".format(round((endtime - starttime).seconds + 0.000001 * (endtime - starttime).microseconds, 2)))
             print("horizons have been solved!")
             print("-------------------------")
 
-        # choose best action
-        print("Now choose best action!")
-        bestVector = self.getBestActionVec(belief, state)
+        bestVector = self.getBestActionVec(belief)
         return bestVector.action
 
 

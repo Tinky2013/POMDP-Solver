@@ -102,11 +102,10 @@ class TagTransition():
 
 
         # ensure the valid input
-        isRobotActionValid = self.judgeRobotActionValid(robotState, action)
         isRobotActionNextstateValid = self.judgeRobotActionNextstateValid(robotState, action, robotNextState)
         isOppoPositionShiftValid = self.judgeOppoPositionShiftValid(oppoState, oppoNextState)
         isOppoAvoidRobot = self.judgeOppoAvoidRobot(action, robotNextState, oppoState, oppoNextState)
-        isValidInput = isRobotActionValid * isRobotActionNextstateValid * isOppoPositionShiftValid * isOppoAvoidRobot
+        isValidInput = isRobotActionNextstateValid * isOppoPositionShiftValid * isOppoAvoidRobot
         if isValidInput == 0:
             return 0.0
 
@@ -169,8 +168,11 @@ class TagTransition():
 
     def judgeRobotActionNextstateValid(self, robotState, action, robotNextState):
         # for the robot, given its state and action, the nextState is fixed
-        directionVec = list(map(lambda v: v[1] - v[0], zip(eval(robotState), eval(robotNextState))))
-        return self.robotValidActionNextstate[action].get(tuple(directionVec), 0.0)
+        if self.judgeRobotActionValid(robotState, action) == 0 and robotState == robotNextState:
+            return 1.0  # robot tough boundary, stay at the blog
+        else:
+            directionVec = list(map(lambda v: v[1] - v[0], zip(eval(robotState), eval(robotNextState))))
+            return self.robotValidActionNextstate[action].get(tuple(directionVec), 0.0)
 
     def judgeOppoPositionShiftValid(self, oppoState, oppoNextState):
         # for the opponent, it can only stay or move to the neighbor state

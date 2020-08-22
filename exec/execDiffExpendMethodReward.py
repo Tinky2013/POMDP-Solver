@@ -2,9 +2,8 @@ from src.tigermodel import TigerModel
 from src.pbvi import PBVI
 
 from src.pbviBeliefExpansion import BeliefExpension
-
+from src.pomdpSimulation import  POMDP
 from visualization.visualizeTiger import VisualizedTiger
-import datetime
 
 import numpy as np
 
@@ -46,6 +45,7 @@ def main():
         for trial in range(Trial):
             modelEnv = TigerModel()
             modelEnv.specifyEnvironmentArguments(envParams)
+            pomdp = POMDP(modelEnv)
 
             # initial belief points for PBVI
             beliefPoints = modelEnv.generateInitBeliefPoints(algoParams['num_belief'])
@@ -70,9 +70,9 @@ def main():
                 for i in range(execParams['max_play']):
                     # this is a general framework of solving POMDP problems
                     state = modelEnv.currentState
-                    action = solver.getPlanningAction(state, belief)  # get best action
-                    nextState, observation, reward = modelEnv.envFeedback(state, action)  # receive environment feedback
-                    belief = modelEnv.updateBelief(belief, action, observation)  # update the belief
+                    action = solver.getPlanningAction(belief)  # get best action
+                    nextState, observation, reward = pomdp.envFeedback(state, action)  # receive environment feedback
+                    belief = pomdp.updateBelief(belief, action, observation)  # update the belief
                     totalRewards += reward
                     modelEnv.currentState = nextState
                     # for every trial, print the result

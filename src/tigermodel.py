@@ -69,33 +69,6 @@ class TigerModel(object):
         Beliefs = [1 / stateNUM for i in range(stateNUM)]
         return Beliefs
 
-    def getValidAction(self, state):
-        return self.actions
-
-    def updateBelief(self, belief, action, observation):
-        newBelief = [
-            self.observationFunction(action, sj, observation)*sum(
-                [self.transitionFunction(action, si, sj) * float(belief[i]) for i, si in enumerate(self.states)]
-            ) for sj in self.states
-        ]
-
-        # get the normalized belief
-        normalizedFactor = sum(newBelief)
-        assert (normalizedFactor != 0)
-        normalizedBelief = [x / normalizedFactor for x in newBelief]
-        return normalizedBelief  # return array with length=stateDim
-
-    def envFeedback(self,state, action):
-        nextStateProbs = [self.transitionFunction(action, state, sj) for sj in self.states]
-        nextState = self.states[chooseItemIdx(nextStateProbs)]
-
-        observationProbs = [self.observationFunction(action, nextState, oj) for oj in self.observations]
-        observation = self.observations[chooseItemIdx(observationProbs)]
-        reward = self.rewardFunction(action, state)
-
-        return nextState, observation, reward
-
-
 
 
 

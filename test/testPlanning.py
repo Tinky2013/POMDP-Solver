@@ -45,18 +45,18 @@ class TestGetBestPlanningAction(unittest.TestCase):
         pass
 
     @data(
-        ('tiger-left', [0.5,0.5],'listen'),
-        ('tiger-left', [0.6,0.4],'listen'),
-        ('tiger-left', [0.4,0.6],'listen'),
-        ('tiger-left', [0.99,0.01],'open-right'),
-        ('tiger-left', [0.01,0.99],'open-left'),
-        ('tiger-left', [1.,0.],'open-right'),
-        ('tiger-left', [0.,1.],'open-left'),
+        ([0.5,0.5],'listen'),
+        ([0.6,0.4],'listen'),
+        ([0.4,0.6],'listen'),
+        ([0.99,0.01],'open-right'),
+        ([0.01,0.99],'open-left'),
+        ([1.,0.],'open-right'),
+        ([0.,1.],'open-left'),
     )
     @unpack
-    def testGetBestPlanningAction(self, state, belief, actualBestAction):
+    def testGetBestPlanningAction(self, belief, actualBestAction):
 
-        testedTerm = pbvi.getPlanningAction(state, belief)
+        testedTerm = pbvi.getPlanningAction(belief)
         testingTerm = actualBestAction
         self.assertEqual(testedTerm, testingTerm)
 

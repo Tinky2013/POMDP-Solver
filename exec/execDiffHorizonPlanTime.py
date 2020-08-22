@@ -1,5 +1,6 @@
 from src.tigermodel import TigerModel
 from src.pbvi import PBVI
+from src.pomdpSimulation import POMDP
 import datetime
 
 
@@ -36,6 +37,7 @@ def main():
 
             modelEnv = TigerModel()
             modelEnv.specifyEnvironmentArguments(envParams)
+            pomdp = POMDP(modelEnv)
             solver = PBVI(modelEnv)
 
             beliefPoints = modelEnv.generateInitBeliefPoints(algoParams['num_belief'])
@@ -52,7 +54,7 @@ def main():
             starttime = datetime.datetime.now()
             # only planning process
             state = modelEnv.currentState
-            action = solver.getPlanningAction(state, belief)
+            action = solver.getPlanningAction(belief)
             # record the playing time
             endtime = datetime.datetime.now()
             timeFloat = round((endtime - starttime).seconds+0.000001*(endtime - starttime).microseconds,2)
