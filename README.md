@@ -9,13 +9,15 @@ Here's the code base of algorthm that can solve POMDPs, for example, PBVI (Point
 * [**runPomdpExample.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/runPomdpExample.py): Executable example.
 
 * src
-  * [**pomdputility.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/pomdputility.py): Super class for all the solvers (although we only implement PBVI now, it will make it easier to add other solvers).
+  * [**pomdpSimulation.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/pomdpSimulation.py): Simulate the POMDP world (For model evaluation part).
   * [**pbvi.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/pbvi.py): Core code of PBVI (Point Based Value Iteration).
   * [**pbviBeliefExpension.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/pbviBeliefExpansion.py): Belief Expension Method for PBVI.
-  * [**tigermodel.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/tigermodel.py): Model setting part (Get information of tiger environment).
+  * [**tigermodel.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/tigermodel.py): Tiger Model example.
+  * [**tagmodel.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/src/tagmodel.py): Tag Model example.
 
 * Environment
   * [**tigerEnvironment.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/Environment/tigerEnvironment.py): Task Environment of Two-Tiger Problem.
+  * [**tagEnvironment.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/Environment/tagEnvironment.py): Task Environment of Tag Problem.
   
 * tools: Useful packed tools for solving POMDPs.
   * [**alphaVector.py**](https://github.com/Tinky2013/POMDP-Solver/blob/master/tools/alphaVector.py): Alpha-Vector data structure.
