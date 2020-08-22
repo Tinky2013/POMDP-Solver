@@ -5,16 +5,16 @@ from src.pomdpSimulation import  POMDP
 
 def main():
     execParams = {
-        'model_name': 'Tiger',
+        'model_name': 'Tag',
         'max_play': 100,
         'print_process': True,
     }
     algoParams = {
         'algo': 'pbvi',
-        'horizon_T': 1,
+        'horizon_T': 5,
         'expend_N': 1,
         'expend_method': 'SSRA',  # RA, SSRA, SSEA
-        'num_belief': 5,
+        'num_belief': 100,
     }
     envParams = {
         'env_name': 'Tag_env',
@@ -51,12 +51,8 @@ def main():
 
         # for every trial, print the result
         if execParams['print_process']:
-            print(
-                "Play Times: {} || Action Chosen: {} || Observation: {} || Reward: {} || New State: {} || New Belief: {}".format(
+            print("Play Times: {} || Action Chosen: {} || Observation: {} || Reward: {} || New State: {} || New Belief: {}".format(
                     i, action, observation, reward, nextState, belief))
-            print("---------")
-    # end playing
-
 
     print("Total reward:{}".format(totalRewards))
 
